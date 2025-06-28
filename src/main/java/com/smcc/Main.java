@@ -1,6 +1,7 @@
 package com.smcc;
 
 import com.smcc.app.App;
+import com.smcc.backend_process.AudioSystem;
 
 
 /**
@@ -13,6 +14,7 @@ import com.smcc.app.App;
     public static void main(String[] args) {
 
         //Initialize The App(Starting)
+           AudioSystem.playSoundStart();
            App.init();
 
         }

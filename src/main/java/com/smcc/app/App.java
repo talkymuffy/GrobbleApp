@@ -2,6 +2,7 @@ package com.smcc.app;
 
 
 import com.smcc.backend_process.AI.MrCluckIntelligence;
+import com.smcc.backend_process.AudioSystem;
 import com.smcc.backend_process.CaesarCipher;
 
 import javax.swing.*;
@@ -102,6 +103,12 @@ public class App {
 
 
                 String response = MrCluckIntelligence.processUserMessage(text);
+                if(response.equals( "I'm not sure how to respond to that yet, but I'm learning!")){
+                    AudioSystem.playTrade();
+                }
+                else{
+                    AudioSystem.playPlop();
+                }
                 messageArea.append("Mr. Cluck: " + response + "\n");
 
                 messageArea.setCaretPosition(messageArea.getDocument().getLength());

@@ -2,6 +2,7 @@ package com.smcc.backend_process.AI;
 
 import com.smcc.backend_process.Mathematics;
 import com.smcc.backend_process.Physics;
+import com.smcc.backend_process.PhysicsFAQ;
 
 import java.awt.*;
 import java.io.IOException;
@@ -56,6 +57,27 @@ public class MrCluckIntelligence {
             return getPhysicsSampleInputs();
         }
 
+
+        // For definitions
+        if (text.startsWith("what is ") || text.startsWith("define ") || text.contains("definition of")) {
+            String topic = text
+                    .replace("what is", "")
+                    .replace("define", "")
+                    .replace("definition of", "")
+                    .trim();
+            String definition = PhysicsFAQ.getDefinition(topic);
+            if (definition != null) return definition;
+        }
+
+// For FAQs
+        if (text.startsWith("faq about") || text.startsWith("faqs about")) {
+            String topic = text
+                    .replace("faq about", "")
+                    .replace("faqs about", "")
+                    .trim();
+            String faqs = PhysicsFAQ.getFAQs(topic);
+            if (faqs != null) return faqs;
+        }
 
         // Calculate Sections
         try {

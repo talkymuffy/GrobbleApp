@@ -8,16 +8,7 @@ public class Physics {
     public static String autoSolvePhysics(String question) {
         question = question.toLowerCase().trim();
 
-        if (question.startsWith("what is") || question.startsWith("define ") || question.contains("definition of")) {
-            String topic = PhysicsFAQ.extractTopic(question);
-            String defAndFaqs = PhysicsFAQ.getDefinitionAndFAQs(topic);
-            if (defAndFaqs != null) return defAndFaqs;
-        }
-        if (question.startsWith("faq about") || question.startsWith("faqs about")) {
-            String topic = PhysicsFAQ.extractTopic(question);
-            String faqs = PhysicsFAQ.getFAQs(topic);
-            if (faqs != null) return faqs;
-        }
+
         // --- End FAQ/Definition Handling ---
 
         // Topic detection to computation
