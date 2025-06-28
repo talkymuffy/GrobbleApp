@@ -4,8 +4,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Physics {
-  //Projectile Motion, Laws of Motion, Electricity, Magnetism,Gravitation,Rotational Motion,Velocity,Speed,Displacement, Acceleration,SHM,Themrodynamics,Elasticity,Fluid Mechanics
-    //Vectors
   public static String autoSolvePhysics(String question) {
       question = question.toLowerCase();
 
@@ -200,7 +198,6 @@ public class Physics {
         return "Provide force and area values, like: 'Force is 100, area is 0.5'";
     }
     private static String solveVectors(String question) {
-        // Example format: "Vector A is 5, Vector B is 4, angle is 60"
         Pattern aPat = Pattern.compile("vector\\s*a\\s*(is)?\\s*(\\d+(\\.\\d+)?)");
         Pattern bPat = Pattern.compile("vector\\s*b\\s*(is)?\\s*(\\d+(\\.\\d+)?)");
         Pattern anglePat = Pattern.compile("angle\\s*(is)?\\s*(\\d+(\\.\\d+)?)");
