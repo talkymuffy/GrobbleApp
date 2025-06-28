@@ -45,4 +45,4 @@ AI used: Microsoft Copilot
 🐣 Hidden Bonus
 Yes, we included Minecraft sound effects as easter eggs. 🎮
 
-Let me know if you want badges, screenshots, or GitHub Actions CI added in!
+
