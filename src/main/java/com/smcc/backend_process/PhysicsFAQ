@@ -1,1 +1,114 @@
+package com.smcc.backend_process;
 
+import java.util.HashMap;
+import java.util.Map;
+
+public class PhysicsFAQ {
+    private static final Map<String, String> topicDefinitions = new HashMap<>();
+    private static final Map<String, String[]> topicFAQs = new HashMap<>();
+
+    static {
+        topicDefinitions.put("projectile", "Projectile motion is the motion of an object thrown or projected into the air, subject only to acceleration due to gravity.");
+        topicDefinitions.put("laws of motion", "Newton's laws of motion describe the relationship between the motion of an object and the forces acting on it.");
+        topicDefinitions.put("electricity", "Electricity is the set of physical phenomena associated with the presence and motion of electric charge.");
+        topicDefinitions.put("magnetism", "Magnetism is a physical phenomenon produced by the motion of electric charge, resulting in attractive and repulsive forces between objects.");
+        topicDefinitions.put("gravitation", "Gravitation is a natural phenomenon by which all things with mass or energy are brought toward one another.");
+        topicDefinitions.put("rotational motion", "Rotational motion is the movement of a body about a fixed axis or center.");
+        topicDefinitions.put("kinematics", "Kinematics is the branch of mechanics concerned with the motion of objects without reference to the forces that cause the motion.");
+        topicDefinitions.put("shm", "Simple Harmonic Motion (SHM) is a type of periodic motion where the restoring force is directly proportional to displacement.");
+        topicDefinitions.put("thermodynamics", "Thermodynamics is the branch of physics concerned with heat and temperature and their relation to energy and work.");
+        topicDefinitions.put("elasticity", "Elasticity is the property of a material to regain its original shape after being deformed.");
+        topicDefinitions.put("fluid mechanics", "Fluid mechanics is the study of fluids (liquids and gases) and the forces on them.");
+        topicDefinitions.put("vectors", "Vectors are mathematical quantities with both magnitude and direction.");
+
+        topicFAQs.put("projectile", new String[]{
+                "Q: What is the formula for the range of a projectile?\nA: Range = (v^2 * sin(2θ)) / g, where v is velocity, θ is angle, and g is gravity.",
+                "Q: What factors affect the maximum height?\nA: Initial velocity and angle of projection."
+        });
+        topicFAQs.put("laws of motion", new String[]{
+                "Q: What is Newton's Second Law?\nA: Force = mass × acceleration (F = ma).",
+                "Q: What is inertia?\nA: The tendency of an object to resist change in its state of motion."
+        });
+        topicFAQs.put("electricity", new String[]{
+                "Q: What is Ohm's Law?\nA: V = IR, where V is voltage, I is current, and R is resistance.",
+                "Q: What is electric current?\nA: The flow of electric charge."
+        });
+        topicFAQs.put("magnetism", new String[]{
+                "Q: What is a magnetic field?\nA: The region around a magnet where magnetic forces can be observed.",
+                "Q: What is the formula for magnetic force on a conductor?\nA: F = I × L × B × sin(θ)."
+        });
+        topicFAQs.put("gravitation", new String[]{
+                "Q: What is the formula for weight?\nA: Weight = mass × gravity (W = mg).",
+                "Q: What is the value of gravitational acceleration on Earth?\nA: Approximately 9.8 m/s²."
+        });
+        topicFAQs.put("rotational motion", new String[]{
+                "Q: What is torque?\nA: Torque is the force that causes rotation, τ = I × α.",
+                "Q: What is moment of inertia?\nA: A measure of an object's resistance to changes in its rotation."
+        });
+        topicFAQs.put("kinematics", new String[]{
+                "Q: What is the equation for final velocity?\nA: v = u + at, where u is initial velocity, a is acceleration, t is time.",
+                "Q: What is displacement?\nA: The change in position of an object."
+        });
+        topicFAQs.put("shm", new String[]{
+                "Q: What is the formula for the time period of SHM?\nA: T = 2π√(m/k), where m is mass and k is spring constant.",
+                "Q: What causes SHM?\nA: A restoring force proportional to displacement."
+        });
+        topicFAQs.put("thermodynamics", new String[]{
+                "Q: What is specific heat?\nA: The amount of heat required to raise the temperature of 1 kg of a substance by 1°C.",
+                "Q: What is the first law of thermodynamics?\nA: Energy cannot be created or destroyed, only transformed."
+        });
+        topicFAQs.put("elasticity", new String[]{
+                "Q: What is Young's modulus?\nA: A measure of the stiffness of a solid material.",
+                "Q: What is stress and strain?\nA: Stress is force per unit area, strain is the ratio of extension to original length."
+        });
+        topicFAQs.put("fluid mechanics", new String[]{
+                "Q: What is pressure in fluids?\nA: Pressure = Force / Area.",
+                "Q: What is buoyancy?\nA: The upward force exerted by a fluid on a submerged object."
+        });
+        topicFAQs.put("vectors", new String[]{
+                "Q: What is a dot product?\nA: The product of the magnitudes of two vectors and the cosine of the angle between them.",
+                "Q: How do you find the angle between two vectors?\nA: Using the dot product formula."
+        });
+    }
+
+    public static String getDefinitionAndFAQs(String topic) {
+        if(topic == null) return null;
+        if (topicDefinitions.containsKey(topic)) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Definition: ").append(topicDefinitions.get(topic)).append("\n\nFAQs:\n");
+            for (String faq : topicFAQs.get(topic)) {
+                sb.append(faq).append("\n");
+            }
+            return sb.toString().trim();
+        }
+        return null;
+    }
+
+    public static String getFAQs(String topic) {
+        if(topic == null) return null;
+        if (topicFAQs.containsKey(topic)) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("FAQs for ").append(topic).append(":\n");
+            for (String faq : topicFAQs.get(topic)) {
+                sb.append(faq).append("\n");
+            }
+            return sb.toString().trim();
+        }
+        return null;
+    }
+
+    public static String extractTopic(String question) {
+        String q = question.toLowerCase();
+        String[] topics = {
+            "projectile", "laws of motion", "electricity", "magnetism", "gravitation",
+            "rotational motion", "kinematics", "shm", "thermodynamics",
+            "elasticity", "fluid mechanics", "vectors"
+        };
+        for (String key : topics) {
+            if (q.contains(key)) return key;
+            if (key.equals("shm") && (q.contains("simple harmonic") || q.contains("shm"))) return "shm";
+            if (key.equals("vectors") && q.contains("vector")) return "vectors";
+        }
+        return null;
+    }
+}
