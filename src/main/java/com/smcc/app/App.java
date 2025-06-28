@@ -1,6 +1,7 @@
 package com.smcc.app;
 
-import com.smcc.backend_process.BackendProcess;
+
+import com.smcc.backend_process.CaesarCipher;
 
 import javax.swing.*;
 import java.awt.*;
@@ -177,7 +178,7 @@ public class App {
                 String confirm = new String(confirmPassword.getPassword());
 
                 JDialog dialog = new JDialog(FRAME, "Gobble Notice", false); // false = non-modal
-                dialog.setSize(300, 120);
+                dialog.setSize(500, 250);
                 dialog.setUndecorated(false); // You can set to true for a frameless look
 
                 JPanel msgPanel = new JPanel();
@@ -189,9 +190,9 @@ public class App {
                 if (!pass.equals(confirm)) {
                     status.setText("Passwords do not match.");
                 } else {
-                    String userDetails=userName+"€"+email_String+"€"+pass+"€"+confirm;
+                    String userDetails=userName+" "+email_String+" "+pass;
                     try {
-                        BackendProcess.CaesarCipher.writeToFile(new BackendProcess.CaesarCipher(new int[]{1,2}).encrypt(userDetails.toCharArray()));
+                        CaesarCipher.writeToFile(new CaesarCipher(new int[]{1,2}).encrypt(userDetails.toCharArray()));
                         status.setText("Registration successful. Go Back To Login To Enter!");
                     } catch (IOException ex) {
                         status.setText("Error! File Not Found!");
@@ -246,7 +247,50 @@ public class App {
         public void actionPerformed(ActionEvent e) {
             String username = LOGIN_TEXT_FIELD.getText();
             String password = new String(LOGIN_PASSWORD_FIELD.getPassword());
-            // BackendProcess logic
+
+            try {
+                // Read and decrypt stored login
+                String encryptedDetails = CaesarCipher.readFromFile();
+                String decryptedDetails = new CaesarCipher(new int[]{1, 2}).decrypt(encryptedDetails);
+
+                // Assuming format: "storedUser storedPassword"
+                String[] tokens = decryptedDetails.trim().split(" ");
+                if (tokens.length != 3) {
+                    System.out.println("Decrypted login file contents: [" + decryptedDetails + "]");
+                    throw new IllegalStateException("Invalid login file format");
+                }
+
+                String storedUser = tokens[0];
+                String storedPassword = tokens[2];
+
+                if (storedUser.equals(username) && storedPassword.equals(password)) {
+
+
+                } else {
+                    System.out.println("Decrypted login file contents: [" + decryptedDetails + "]");
+                    showDialog("Details Do Not Match! Try Again");
+                }
+            } catch (IOException ex) {
+                showDialog("Error! Try Restarting the App.");
+                ex.printStackTrace();
+            }
+        }
+
+        private void showDialog(String message) {
+            JDialog dialog = new JDialog(FRAME, "Gobble Notice", false);
+            dialog.setSize(400, 150);
+            dialog.setLocationRelativeTo(FRAME);
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+            JPanel msgPanel = new JPanel();
+            msgPanel.setBackground(new Color(30, 30, 30));
+            JLabel status = new JLabel(message);
+            status.setForeground(Color.WHITE);
+            status.setFont(new Font("Segoe UI", Font.BOLD, 14));
+            msgPanel.add(status);
+
+            dialog.add(msgPanel);
+            dialog.setVisible(true);
         }
     }
 
