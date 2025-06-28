@@ -42,7 +42,6 @@ public class Mathematics {
         return "Could not understand or solve the equation. Please check the format.";
     }
 
-    // --- Solvers ---
 
     private static String solveProbability(Matcher m, StringBuilder out) {
         double favourable = Double.parseDouble(m.group(1).trim());
