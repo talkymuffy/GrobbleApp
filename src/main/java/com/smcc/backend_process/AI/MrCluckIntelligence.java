@@ -90,83 +90,83 @@ public class MrCluckIntelligence {
 
     public static String getMathSampleInputs() {
         return """
-        Mathematics Sample Inputs:
+        -Mathematics Sample Inputs:
 
-        ▸ Bayes' Theorem
+        > Bayes' Theorem
         "bayes(0.4, 0.7, 0.6)"
 
-        ▸ Probability
+        > Probability
         "P = 4 / 10"
         "probability(3,12)"
 
-        ▸ Trigonometry
+        > Trigonometry
         "sin(30)"
         "cos(60)"
         "tan(45)"
 
-        ▸ Fractions
+        > Fractions
         "3/4 + 1/2"
         "5/6 * 2/3"
 
-        ▸ Arithmetic
+        > Arithmetic
         "12.5 + 7.2"
         "30 / 5"
 
-        ▸ HCF and LCM
+        > HCF and LCM
         "hcf(12, 18)"
         "lcm(8, 20)"
 
-        ▸ Inequality
+        > Inequality
         "2x+4>=0"
         "-3x-9<0"
 
-        ▸ Quadratic Equation
+        > Quadratic Equation
         "3x^2+5x+2=0"
         "x^2-4x+4=0"
 
-        ▸ Linear Equation
+        > Linear Equation
         "2x-6=0"
         "-x+3=0"
         """;
     }
     public static String getPhysicsSampleInputs() {
         return """
-        ⚙️ Physics Sample Inputs:
+        -Physics Sample Inputs:
 
-        ▸ Projectile Motion
+        > Projectile Motion
         "Find range if velocity is 20 and angle is 45"
 
-        ▸ Laws of Motion
+        > Laws of Motion
         "Find force if mass is 5 and acceleration is 2"
 
-        ▸ Electricity
+        > Electricity
         "Voltage is 12, resistance is 6"
 
-        ▸ Magnetism
+        > Magnetism
         "Current is 3, length is 2, magnetic field is 0.5, angle is 30"
 
-        ▸ Gravitation
+        > Gravitation
         "Find weight if mass is 10"
 
-        ▸ Rotational Motion
+        > Rotational Motion
         "Moment of inertia is 2, angular acceleration is 3"
 
-        ▸ Kinematics
+        > Kinematics
         "Initial velocity is 5, acceleration is 2, time is 3"
 
-        ▸ SHM
+        > SHM
         "Mass is 1, spring constant is 4"
 
-        ▸ Thermodynamics
+        > Thermodynamics
         "Mass is 2, specific heat is 4200, temperature change is 5"
 
-        ▸ Elasticity
+        > Elasticity
         "Force is 100, area is 0.01, extension is 0.002, original length is 2"
 
-        ▸ Fluid Mechanics
+        > Fluid Mechanics
         "Force is 100, area is 0.2"
 
-        ▸ Vectors
+        > Vectors
         "Vector A is 5, Vector B is 4, angle is 60"
         """;
     }
