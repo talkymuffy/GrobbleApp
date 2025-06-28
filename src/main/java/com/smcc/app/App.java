@@ -1,6 +1,7 @@
 package com.smcc.app;
 
 
+import com.smcc.backend_process.AI.MrCluckIntelligence;
 import com.smcc.backend_process.CaesarCipher;
 
 import javax.swing.*;
@@ -26,6 +27,9 @@ public class App {
     // Register
     JPanel REGISTER_PANEL;
 
+    //MAIN
+    JPanel MAIN;
+
     private App() {
         FRAME = new JFrame("Grobble App");
         FRAME.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -39,18 +43,104 @@ public class App {
         ImageIcon newlogoIcon=new ImageIcon(scaledImage);
         icon=newlogoIcon;
 
+        FRAME.setIconImage(newlogoIcon.getImage());
+
         cardLayout = new CardLayout();
         MAIN_CONTAINER = new JPanel(cardLayout);
 
+
         LOGIN_PANEL = createLoginPanel();
         REGISTER_PANEL = createRegisterPanel();
+        MAIN=createChatTypePanel("Mr. Cluck's Chat!");
 
         MAIN_CONTAINER.add(LOGIN_PANEL, "Login");
         MAIN_CONTAINER.add(REGISTER_PANEL, "Register");
+        MAIN_CONTAINER.add(MAIN, "Main");
+
 
         FRAME.add(MAIN_CONTAINER);
         FRAME.setVisible(true);
     }
+
+    private JPanel createChatTypePanel(String title) {
+        JPanel chatPanel = new JPanel(new BorderLayout());
+        chatPanel.setBackground(new Color(45, 45, 45));
+        chatPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(new Color(100, 149, 237), 2),
+                title,
+                0, 0,
+                new Font("Segoe UI", Font.BOLD, 13),
+                Color.WHITE
+        ));
+
+        // Chat message display area
+        JTextArea messageArea = new JTextArea();
+        messageArea.setEditable(false);
+        messageArea.setLineWrap(true);
+        messageArea.setWrapStyleWord(true);
+        messageArea.setBackground(new Color(35, 35, 35));
+        messageArea.setForeground(Color.WHITE);
+        messageArea.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        JScrollPane scrollPane = new JScrollPane(messageArea);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // Input + Send
+        JTextField inputField = new JTextField();
+        inputField.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        inputField.setBackground(new Color(50, 50, 50));
+        inputField.setForeground(Color.WHITE);
+        inputField.setCaretColor(Color.WHITE);
+        inputField.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+
+        JButton sendButton = getJButton(inputField, messageArea);
+
+        inputField.addActionListener(e -> sendButton.doClick()); // Send on Enter
+        sendButton.addActionListener(e -> {
+            String text = inputField.getText().trim();
+            if (!text.isEmpty()) {
+                messageArea.append("You: " + text + "\n");
+                inputField.setText("");
+
+
+                String response = MrCluckIntelligence.processUserMessage(text);
+                messageArea.append("Mr. Cluck: " + response + "\n");
+
+                messageArea.setCaretPosition(messageArea.getDocument().getLength());
+            }
+        });
+
+        JPanel inputPanel = new JPanel(new BorderLayout(10, 0));
+        inputPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        inputPanel.setBackground(new Color(45, 45, 45));
+        inputPanel.add(inputField, BorderLayout.CENTER);
+        inputPanel.add(sendButton, BorderLayout.EAST);
+
+        chatPanel.add(scrollPane, BorderLayout.CENTER);
+        chatPanel.add(inputPanel, BorderLayout.SOUTH);
+
+        return chatPanel;
+    }
+
+    private static JButton getJButton(JTextField inputField, JTextArea messageArea) {
+        JButton sendButton = new JButton("Send");
+        sendButton.setBackground(new Color(70, 130, 180));
+        sendButton.setForeground(Color.WHITE);
+        sendButton.setFocusPainted(false);
+        sendButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+
+        // Action on send
+        sendButton.addActionListener(e -> {
+            String text = inputField.getText().trim();
+            if (!text.isEmpty()) {
+                messageArea.append("You: " + text + "\n");
+                inputField.setText("");
+                // Scroll to bottom
+                messageArea.setCaretPosition(messageArea.getDocument().getLength());
+            }
+        });
+        return sendButton;
+    }
+
 
     private JPanel createLoginPanel() {
         JPanel panel = new JPanel();
@@ -249,11 +339,11 @@ public class App {
             String password = new String(LOGIN_PASSWORD_FIELD.getPassword());
 
             try {
-                // Read and decrypt stored login
+
                 String encryptedDetails = CaesarCipher.readFromFile();
                 String decryptedDetails = new CaesarCipher(new int[]{1, 2}).decrypt(encryptedDetails);
 
-                // Assuming format: "storedUser storedPassword"
+
                 String[] tokens = decryptedDetails.trim().split(" ");
                 if (tokens.length != 3) {
                     System.out.println("Decrypted login file contents: [" + decryptedDetails + "]");
@@ -264,14 +354,14 @@ public class App {
                 String storedPassword = tokens[2];
 
                 if (storedUser.equals(username) && storedPassword.equals(password)) {
-
+                    cardLayout.show(MAIN_CONTAINER, "Main");
 
                 } else {
                     System.out.println("Decrypted login file contents: [" + decryptedDetails + "]");
                     showDialog("Details Do Not Match! Try Again");
                 }
             } catch (IOException ex) {
-                showDialog("Error! Try Restarting the App.");
+                showDialog("Error! Try Restarting the App Or Register Yourself First!");
                 ex.printStackTrace();
             }
         }
