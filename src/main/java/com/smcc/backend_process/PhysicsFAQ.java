@@ -4,9 +4,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PhysicsFAQ {
+    private static final Map<String, String> topicDefinitions = new HashMap<>();
     private static final Map<String, String[]> topicFAQs = new HashMap<>();
 
     static {
+        topicDefinitions.put("velocity", "Velocity is the rate of change of displacement; it is a vector quantity that has both magnitude and direction.");
+        topicDefinitions.put("spring constant", "The spring constant (k) measures the stiffness of a spring, as described by Hooke’s law (F = -k·x).");
+        topicDefinitions.put("amplitude", "Amplitude is the maximum displacement from the equilibrium position in oscillatory motion such as SHM.");
+        topicDefinitions.put("archimedes principle", "Archimedes’ Principle states that a body submerged in a fluid experiences an upward buoyant force equal to the weight of the fluid it displaces.");
+        topicDefinitions.put("kinematics", "Kinematics is the branch of mechanics dealing with the motion of objects without considering the forces causing the motion.");
+        topicDefinitions.put("thermodynamics", "Thermodynamics is the study of heat, work, temperature, and the statistical behaviors of systems.");
+        topicDefinitions.put("elasticity", "Elasticity describes a material's ability to return to its original shape after being deformed.");
+        topicDefinitions.put("fluid mechanics", "Fluid mechanics studies the behavior of fluids (liquids and gases) and the forces acting on them.");
+        topicDefinitions.put("gravitation", "Gravitation is the force of attraction between objects due to their masses, most notably observed as the force keeping planets in orbit.");
+        topicDefinitions.put("rotational motion", "Rotational motion refers to the movement of an object around an axis, characterized by quantities like torque and angular velocity.");
+        topicDefinitions.put("magnetism", "Magnetism is a force caused by moving electric charges resulting in attractive and repulsive forces between objects.");
+        topicDefinitions.put("vectors", "Vectors are quantities that have both magnitude and direction, commonly represented by arrows.");
+        topicDefinitions.put("shm", "Simple Harmonic Motion (SHM) is a type of periodic oscillatory motion under a restoring force proportional to displacement from equilibrium.");
+
+        // FAQs
         topicFAQs.put("velocity", new String[]{
             "Q: What is velocity?\nA: Velocity is the rate of change of displacement; it is a vector quantity.",
             "Q: How is velocity different from speed?\nA: Speed is scalar (no direction), velocity is vector (includes direction)."
@@ -84,16 +100,19 @@ public class PhysicsFAQ {
         });
     }
 
+    public static String getDefinition(String topic) {
+        if (topic == null) return null;
+        return topicDefinitions.getOrDefault(topic.toLowerCase(), null);
+    }
+
     public static String getFAQs(String topic) {
-        if(topic == null) return null;
-        if (topicFAQs.containsKey(topic)) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("FAQs for ").append(topic).append(":\n");
-            for (String faq : topicFAQs.get(topic)) {
-                sb.append(faq).append("\n");
-            }
-            return sb.toString().trim();
+        if (topic == null) return null;
+        String[] faqs = topicFAQs.get(topic.toLowerCase());
+        if (faqs == null) return null;
+        StringBuilder sb = new StringBuilder();
+        for (String faq : faqs) {
+            sb.append(faq).append("\n");
         }
-        return null;
+        return sb.toString().trim();
     }
 }
