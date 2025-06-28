@@ -4,120 +4,217 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Mathematics {
-    // ... [All previous methods remain unchanged] ...
 
-    /**
-     * Accepts a string equation, detects its type (quadratic, linear equation, linear inequality, arithmetic, fraction, probability, bayes, trigonometry),
-     * and solves it using the appropriate method.
-     * Supported:
-     * - Quadratic: ax^2 + bx + c = 0
-     * - Linear: ax + b = 0
-     * - Linear inequalities: ax + b < 0, ax + b <= 0, ax + b > 0, ax + b >= 0
-     * - Arithmetic: a + b, a - b, a * b, a / b
-     * - Fraction: a/b + c/d, a/b - c/d, a/b * c/d, a/b / c/d
-     * - Probability: P = fav / total
-     * - Bayes: bayes(pA, pBgivenA, pBgivenNotA)
-     * - Trigonometry: sin(x), cos(x), tan(x), asin(x), arcsin(x), etc.
-     */
-    public static void autoSolve(String equation) {
+    public static String autoSolve(String equation) {
+        StringBuilder chatOutput = new StringBuilder();
         String eq = equation.trim();
 
-        // Try Bayes format: bayes(pA, pBgivenA, pBgivenNotA)
-        Pattern bayesPat = Pattern.compile("^\\s*bayes\\s*\\(([^,]+),([^,]+),([^\\)]+)\\)\\s*$", Pattern.CASE_INSENSITIVE);
-        Matcher bayesMat = bayesPat.matcher(eq);
-        if (bayesMat.matches()) {
-            solveBayes(bayesMat.group(1), bayesMat.group(2), bayesMat.group(3));
-            return;
-        }
+        // Bayes format
+        Matcher bayesMat = Pattern.compile("^\\s*bayes\\s*\\(([^,]+),([^,]+),([^\\)]+)\\)\\s*$", Pattern.CASE_INSENSITIVE).matcher(eq);
+        if (bayesMat.matches()) return solveBayes(bayesMat, chatOutput);
 
-        // Try probability: P = a / b or probability(a, b)
-        Pattern probPat = Pattern.compile(
-            "^\\s*P\\s*=\\s*([\\d\\.]+)\\s*/\\s*([\\d\\.]+)\\s*$", Pattern.CASE_INSENSITIVE);
-        Matcher probMat = probPat.matcher(eq);
-        if (probMat.matches()) {
-            solveProbability(probMat.group(1), probMat.group(2));
-            return;
-        }
-        Pattern probFuncPat = Pattern.compile(
-            "^\\s*probability\\s*\\(([^,]+),([^\\)]+)\\)\\s*$", Pattern.CASE_INSENSITIVE);
-        Matcher probFuncMat = probFuncPat.matcher(eq);
-        if (probFuncMat.matches()) {
-            solveProbability(probFuncMat.group(1), probFuncMat.group(2));
-            return;
-        }
+        // Probability
+        Matcher probMat = Pattern.compile("^\\s*P\\s*=\\s*([\\d\\.]+)\\s*/\\s*([\\d\\.]+)\\s*$", Pattern.CASE_INSENSITIVE).matcher(eq);
+        if (probMat.matches()) return solveProbability(probMat, chatOutput);
 
-        // Try trigonometry: sin(x), cos(x), tan(x), asin(x), arcsin(x), etc.
-        Pattern trigPat = Pattern.compile("^\\s*([a-zA-Z]+)\\s*\\(\\s*([-+]?\\d*\\.?\\d+)\\s*\\)\\s*$");
-        Matcher trigMat = trigPat.matcher(eq);
-        if (trigMat.matches()) {
-            solveTrigonometry(trigMat.group(2), trigMat.group(1));
-            return;
-        }
+        Matcher probFuncMat = Pattern.compile("^\\s*probability\\s*\\(([^,]+),([^\\)]+)\\)\\s*$", Pattern.CASE_INSENSITIVE).matcher(eq);
+        if (probFuncMat.matches()) return solveProbability(probFuncMat, chatOutput);
 
-        // Try fraction arithmetic: a/b [+, -, *, /] c/d
-        Pattern fracPat = Pattern.compile(
-            "^\\s*(-?\\d+\\s*/\\s*-?\\d+|\\d+)\\s*([+\\-*/])\\s*(-?\\d+\\s*/\\s*-?\\d+|\\d+)\\s*$");
-        Matcher fracMat = fracPat.matcher(eq);
-        if (fracMat.matches()) {
-            solveFractionOperation(fracMat.group(1), fracMat.group(3), fracMat.group(2));
-            return;
-        }
+        // Trigonometry
+        Matcher trigMat = Pattern.compile("^\\s*([a-zA-Z]+)\\s*\\(\\s*([-+]?\\d*\\.?\\d+)\\s*\\)\\s*$")
+                .matcher(eq);
+        if (trigMat.matches()) return solveTrigonometry(trigMat, chatOutput);
 
-        // Try integer arithmetic: a + b, a - b, a * b, a / b
-        Pattern arithPat = Pattern.compile(
-            "^\\s*(-?\\d*\\.?\\d+)\\s*([+\\-*/])\\s*(-?\\d*\\.?\\d+)\\s*$");
-        Matcher arithMat = arithPat.matcher(eq);
-        if (arithMat.matches()) {
-            solveArithmetic(arithMat.group(1), arithMat.group(3), arithMat.group(2));
-            return;
-        }
+        // Fractions
+        Matcher fracMat = Pattern.compile("^\\s*(-?\\d+\\s*/\\s*-?\\d+|\\d+)\\s*([+\\-*/])\\s*(-?\\d+\\s*/\\s*-?\\d+|\\d+)\\s*$")
+                .matcher(eq);
+        if (fracMat.matches()) return solveFractionOperation(fracMat, chatOutput);
 
-        // Try HCF/LCM: hcf(a, b) or lcm(a, b)
-        Pattern hcfLcmPat = Pattern.compile("^\\s*(hcf|lcm)\\s*\\(([^,]+),([^\\)]+)\\)\\s*$", Pattern.CASE_INSENSITIVE);
-        Matcher hcfLcmMat = hcfLcmPat.matcher(eq);
-        if (hcfLcmMat.matches()) {
-            solveHcfLcm(hcfLcmMat.group(2), hcfLcmMat.group(3));
-            return;
-        }
+        // Arithmetic
+        Matcher arithMat = Pattern.compile("^\\s*(-?\\d*\\.?\\d+)\\s*([+\\-*/])\\s*(-?\\d*\\.?\\d+)\\s*$")
+                .matcher(eq);
+        if (arithMat.matches()) return solveArithmetic(arithMat, chatOutput);
 
-        // Try linear inequality: ax + b < 0 or <=, >, >=
-        Pattern ineqPat = Pattern.compile(
-            "^\\s*([-+]?\\d*\\.?\\d*)\\s*\\*?x\\s*([+\\-]\\s*\\d*\\.?\\d+)?\\s*(<|<=|>|>=)\\s*0\\s*$");
-        Matcher ineqMat = ineqPat.matcher(eq.replaceAll("\\s+", ""));
-        if (ineqMat.matches()) {
-            String a = ineqMat.group(1).isEmpty() ? "1" : ineqMat.group(1);
-            String b = ineqMat.group(2) == null ? "0" : ineqMat.group(2).replace(" ", "");
-            String op = ineqMat.group(3);
-            solveInequality(a, b, op);
-            return;
-        }
+        // HCF/LCM
+        Matcher hcfLcmMat = Pattern.compile("^\\s*(hcf|lcm)\\s*\\(([^,]+),([^\\)]+)\\)\\s*$",
+                Pattern.CASE_INSENSITIVE).matcher(eq);
+        if (hcfLcmMat.matches()) return solveHcfLcm(hcfLcmMat, chatOutput);
 
-        // Try quadratic: ax^2 + bx + c = 0
-        Pattern quadPat = Pattern.compile(
-            "^\\s*([-+]?\\d*\\.?\\d*)x\\^2\\s*([+\\-]\\s*\\d*\\.?\\d*)x\\s*([+\\-]\\s*\\d*\\.?\\d*)\\s*=\\s*0\\s*$");
-        Matcher quadMat = quadPat.matcher(eq.replaceAll("\\s+", ""));
-        if (quadMat.matches()) {
-            String a = quadMat.group(1).isEmpty() ? "1" : quadMat.group(1);
-            String b = quadMat.group(2).replace(" ", "");
-            String c = quadMat.group(3).replace(" ", "");
-            solveQuadratic(a, b, c);
-            return;
-        }
+        // Inequality
+        Matcher ineqMat = Pattern.compile("^([-+]?\\d*\\.?\\d*)\\*?x([+\\-]\\d*\\.?\\d+)?(<=|>=|<|>)0$")
+                .matcher(eq.replaceAll("\\s+", ""));
+        if (ineqMat.matches()) return solveInequality(ineqMat, chatOutput);
 
-        // Try linear: ax + b = 0
-        Pattern linPat = Pattern.compile(
-            "^\\s*([-+]?\\d*\\.?\\d*)x\\s*([+\\-]\\s*\\d*\\.?\\d*)\\s*=\\s*0\\s*$");
-        Matcher linMat = linPat.matcher(eq.replaceAll("\\s+", ""));
-        if (linMat.matches()) {
-            String a = linMat.group(1).isEmpty() ? "1" : linMat.group(1);
-            String b = linMat.group(2).replace(" ", "");
-            solveLinear(a, b);
-            return;
-        }
+        // Quadratic
+        Matcher quadMat = Pattern.compile("^([-+]?\\d*\\.?\\d*)x\\^2([+\\-]\\d*\\.?\\d*)x([+\\-]\\d*\\.?\\d*)=0$")
+                .matcher(eq.replaceAll("\\s+", ""));
+        if (quadMat.matches()) return solveQuadratic(quadMat, chatOutput);
 
-        // If not detected
-        System.out.println("Could not detect or solve the equation type. Please check your input.");
+        // Linear
+        Matcher linMat = Pattern.compile("^([-+]?\\d*\\.?\\d*)x([+\\-]\\d*\\.?\\d*)=0$").matcher(eq.replaceAll("\\s+", ""));
+        if (linMat.matches()) return solveLinear(linMat, chatOutput);
+
+        return "Could not understand or solve the equation. Please check the format.";
     }
 
-    // ... [Other methods: solveQuadratic, solveLinear, solveInequality, etc. remain unchanged] ...
+    // Solver implementations — all return String
+
+    private static String solveBayes(Matcher m, StringBuilder out) {
+        double pA = Double.parseDouble(m.group(1).trim());
+        double pBgivenA = Double.parseDouble(m.group(2).trim());
+        double pB = Double.parseDouble(m.group(3).trim());
+
+        if (pB == 0) {
+            return "Undefined: P(B) cannot be zero.";
+        }
+
+        double result = (pBgivenA * pA) / pB;
+        out.append("P(A|B) = ").append(result);
+        return out.toString();
+    }
+
+    private static String solveQuadratic(Matcher m, StringBuilder out) {
+        double A = Double.parseDouble(m.group(1).isEmpty() ? "1" : m.group(1));
+        double B = Double.parseDouble(m.group(2).replace(" ", ""));
+        double C = Double.parseDouble(m.group(3).replace(" ", ""));
+        double D = B * B - 4 * A * C;
+
+        if (D > 0) {
+            double r1 = (-B + Math.sqrt(D)) / (2 * A);
+            double r2 = (-B - Math.sqrt(D)) / (2 * A);
+            out.append("Two real roots: ").append(r1).append(", ").append(r2);
+        } else if (D == 0) {
+            out.append("One real root: ").append(-B / (2 * A));
+        } else {
+            out.append("No real roots.");
+        }
+        return out.toString();
+    }
+
+    private static String solveLinear(Matcher m, StringBuilder out) {
+        double A = Double.parseDouble(m.group(1).isEmpty() ? "1" : m.group(1));
+        double B = Double.parseDouble(m.group(2).replace(" ", ""));
+        if (A == 0) {
+            out.append(B == 0 ? "Infinite solutions." : "No solution.");
+        } else {
+            out.append("x = ").append(-B / A);
+        }
+        return out.toString();
+    }
+
+    private static String solveInequality(Matcher m, StringBuilder out) {
+        double A = Double.parseDouble(m.group(1).isEmpty() ? "1" : m.group(1));
+        double B = Double.parseDouble(m.group(2) == null ? "0" : m.group(2).replace(" ", ""));
+        String op = m.group(3);
+        out.append("Solution: x ").append(op).append(" ").append(-B / A);
+        return out.toString();
+    }
+
+    private static String solveHcfLcm(Matcher m, StringBuilder out) {
+        int a = Integer.parseInt(m.group(2).trim());
+        int b = Integer.parseInt(m.group(3).trim());
+        int hcf = gcd(a, b);
+        int lcm = (a * b) / hcf;
+        out.append("HCF: ").append(hcf).append(", LCM: ").append(lcm);
+        return out.toString();
+    }
+
+    private static int gcd(int a, int b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+
+    private static String solveArithmetic(Matcher m, StringBuilder out) {
+        double a = Double.parseDouble(m.group(1));
+        double b = Double.parseDouble(m.group(3));
+        String op = m.group(2);
+        double res;
+
+        switch (op) {
+            case "+":
+                res = a + b;
+                break;
+            case "-":
+                res = a - b;
+                break;
+            case "*":
+                res = a * b;
+                break;
+            case "/":
+                res = b != 0 ? a / b : Double.NaN;
+                break;
+            default:
+                return "Invalid operation.";
+        }
+
+        out.append("Result: ").append(res);
+        return out.toString();
+    }
+
+    private static String solveFractionOperation(Matcher m, StringBuilder out) {
+        String[] f1 = m.group(1).split("/");
+        String[] f2 = m.group(3).split("/");
+        int n1 = Integer.parseInt(f1[0].trim()), d1 = Integer.parseInt(f1[1].trim());
+        int n2 = Integer.parseInt(f2[0].trim()), d2 = Integer.parseInt(f2[1].trim());
+        String op = m.group(2).trim();
+
+        int num = 0, den = 0;
+        switch (op) {
+            case "+":
+                num = n1 * d2 + n2 * d1;
+                den = d1 * d2;
+                break;
+            case "-":
+                num = n1 * d2 - n2 * d1;
+                den = d1 * d2;
+                break;
+            case "*":
+                num = n1 * n2;
+                den = d1 * d2;
+                break;
+            case "/":
+                num = n1 * d2;
+                den = n2 * d1;
+                break;
+            default:
+                return "Invalid operation.";
+        }
+
+        int g = gcd(num, den);
+        out.append("Result: ").append(num / g).append("/").append(den / g);
+        return out.toString();
+    }
+
+    private static String solveTrigonometry(Matcher m, StringBuilder out) {
+        String func = m.group(1).toLowerCase();
+        double angle = Math.toRadians(Double.parseDouble(m.group(2)));
+        switch (func) {
+            case "sin":
+                out.append("sin: ").append(Math.sin(angle));
+                break;
+            case "cos":
+                out.append("cos: ").append(Math.cos(angle));
+                break;
+            case "tan":
+                out.append("tan: ").append(Math.tan(angle));
+                break;
+            default:
+                out.append("Unsupported trigonometric function.");
+                break;
+        }
+        return out.toString();
+    }
+
+    private static String solveProbability(Matcher m, StringBuilder out) {
+        double f = Double.parseDouble(m.group(1).trim());
+        double t = Double.parseDouble(m.group(2).trim());
+
+        if (t == 0) {
+            return "Invalid: Total outcomes cannot be zero.";
+        }
+
+        double probability = f / t;
+        out.append("Probability = ").append(f).append(" / ").append(t)
+                .append(" = ").append(probability);
+        return out.toString();
+    }
 }

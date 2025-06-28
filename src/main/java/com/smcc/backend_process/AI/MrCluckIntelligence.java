@@ -1,5 +1,7 @@
 package com.smcc.backend_process.AI;
 
+import com.smcc.backend_process.Mathematics;
+
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
@@ -105,6 +107,20 @@ public class MrCluckIntelligence {
         }
 
         //Calculative Sections
+        if(text.contains("solve")||text.contains("equate")||(text.contains("find") &&
+                text.contains("value"))||text.contains("+")||text.contains("-")
+                ||text.contains("x")||text.contains("/")){
+            if(text.contains("-")){
+                return Mathematics.autoSolve(text.substring(text.indexOf('-')+1).trim());
+            }
+            else if(text.contains(":")){
+                return Mathematics.autoSolve(text.substring(text.indexOf(':')+1).trim());
+            }
+            else{
+                return "Formatting Error";
+            }
+
+        }
 
 
         // Basic questions
