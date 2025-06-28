@@ -17,25 +17,25 @@ public class Mathematics {
         try {
             a = Double.parseDouble(aStr.trim());
         } catch (NumberFormatException e) {
-            System.out.println("❌ Invalid input for 'a'. Must be a number.");
+            System.out.println("Invalid input for 'a'. Must be a number.");
             return;
         }
         if (a == 0) {
-            System.out.println("❌ Coefficient 'a' cannot be zero (not a quadratic).");
+            System.out.println("Coefficient 'a' cannot be zero (not a quadratic).");
             return;
         }
 
         try {
             b = Double.parseDouble(bStr.trim());
         } catch (NumberFormatException e) {
-            System.out.println("❌ Invalid input for 'b'. Must be a number.");
+            System.out.println("Invalid input for 'b'. Must be a number.");
             return;
         }
 
         try {
             c = Double.parseDouble(cStr.trim());
         } catch (NumberFormatException e) {
-            System.out.println("❌ Invalid input for 'c'. Must be a number.");
+            System.out.println("Invalid input for 'c'. Must be a number.");
             return;
         }
 
@@ -43,15 +43,15 @@ public class Mathematics {
         if (D > 0) {
             double r1 = (-b + Math.sqrt(D)) / (2 * a);
             double r2 = (-b - Math.sqrt(D)) / (2 * a);
-            System.out.printf("✔ Two distinct real roots: %.6f, %.6f%n", r1, r2);
+            System.out.printf("Two distinct real roots: %.6f, %.6f%n", r1, r2);
         } else if (D == 0) {
             double r = -b / (2 * a);
-            System.out.printf("✔ One real (double) root: %.6f%n", r);
+            System.out.printf("One real (double) root: %.6f%n", r);
         } else {
             double real = -b / (2 * a);
             double imag = Math.sqrt(-D) / (2 * a);
             System.out.printf(
-                "✔ Two complex roots: %.6f + %.6fi and %.6f - %.6fi%n",
+                "Two complex roots: %.6f + %.6fi and %.6f - %.6fi%n",
                 real, imag, real, imag
             );
         }
@@ -70,27 +70,27 @@ public class Mathematics {
         try {
             a = Double.parseDouble(aStr.trim());
         } catch (NumberFormatException e) {
-            System.out.println("❌ Invalid input for 'a'. Must be a valid number.");
+            System.out.println("Invalid input for 'a'. Must be a valid number.");
             return;
         }
         try {
             b = Double.parseDouble(bStr.trim());
         } catch (NumberFormatException e) {
-            System.out.println("❌ Invalid input for 'b'. Must be a valid number.");
+            System.out.println("Invalid input for 'b'. Must be a valid number.");
             return;
         }
 
         if (a == 0) {
             if (b == 0) {
-                System.out.println("✔ Infinite solutions (0·x + 0 = 0).");
+                System.out.println("Infinite solutions (0·x + 0 = 0).");
             } else {
-                System.out.println("❌ No solution (0·x + " + b + " = 0 is impossible).");
+                System.out.println("No solution (0·x + " + b + " = 0 is impossible).");
             }
             return;
         }
 
         double x = -b / a;
-        System.out.printf("✔ Unique solution: x = %.6f%n", x);
+        System.out.printf("Unique solution: x = %.6f%n", x);
     }
 
     /**
@@ -108,17 +108,17 @@ public class Mathematics {
         try {
             a = Double.parseDouble(aStr.trim());
         } catch (NumberFormatException e) {
-            System.out.println("❌ Invalid input for 'a'. Must be a number.");
+            System.out.println("Invalid input for 'a'. Must be a number.");
             return;
         }
         try {
             b = Double.parseDouble(bStr.trim());
         } catch (NumberFormatException e) {
-            System.out.println("❌ Invalid input for 'b'. Must be a number.");
+            System.out.println("Invalid input for 'b'. Must be a number.");
             return;
         }
         if (!op.equals("<") && !op.equals("<=") && !op.equals(">") && !op.equals(">=")) {
-            System.out.println("❌ Invalid operator '" + op + "'. Use one of <, <=, >, >=.");
+            System.out.println("Invalid operator '" + op + "'. Use one of <, <=, >, >=.");
             return;
         }
 
@@ -131,9 +131,9 @@ public class Mathematics {
                 default:   holds = b >= 0; break;
             }
             if (holds) {
-                System.out.println("✔ Inequality holds for all real x.");
+                System.out.println("Inequality holds for all real x.");
             } else {
-                System.out.println("❌ No solution in ℝ.");
+                System.out.println("No solution in ℝ.");
             }
             return;
         }
@@ -157,7 +157,7 @@ public class Mathematics {
         }
 
         System.out.printf(
-            "✔ Solution: x %s %.6f%n",
+            "Solution: x %s %.6f%n",
             relation, bound
         );
     }
@@ -177,22 +177,22 @@ public class Mathematics {
         try {
             a = Double.parseDouble(aStr.trim());
         } catch (NumberFormatException e) {
-            System.out.println("❌ Invalid input for first number. Must be a valid number.");
+            System.out.println("Invalid input for first number. Must be a valid number.");
             return;
         }
         try {
             b = Double.parseDouble(bStr.trim());
         } catch (NumberFormatException e) {
-            System.out.println("❌ Invalid input for second number. Must be a valid number.");
+            System.out.println("Invalid input for second number. Must be a valid number.");
             return;
         }
 
         if (!op.equals("+") && !op.equals("-") && !op.equals("*") && !op.equals("/")) {
-            System.out.println("❌ Invalid operator '" + op + "'. Use one of +, -, *, /.");
+            System.out.println("Invalid operator '" + op + "'. Use one of +, -, *, /.");
             return;
         }
         if (op.equals("/") && b == 0) {
-            System.out.println("❌ Division by zero is not allowed.");
+            System.out.println("Division by zero is not allowed.");
             return;
         }
 
@@ -203,7 +203,7 @@ public class Mathematics {
             case "*": result = a * b; break;
             default:  result = a / b;
         }
-        System.out.printf("✔ Result: %.6f %s %.6f = %.6f%n", a, op, b, result);
+        System.out.printf("Result: %.6f %s %.6f = %.6f%n", a, op, b, result);
     }
 
     /**
@@ -219,13 +219,13 @@ public class Mathematics {
         try {
             a = Long.parseLong(aStr.trim());
         } catch (NumberFormatException e) {
-            System.out.println("❌ Invalid input for first integer. Must be a valid whole number.");
+            System.out.println("Invalid input for first integer. Must be a valid whole number.");
             return;
         }
         try {
             b = Long.parseLong(bStr.trim());
         } catch (NumberFormatException e) {
-            System.out.println("❌ Invalid input for second integer. Must be a valid whole number.");
+            System.out.println("Invalid input for second integer. Must be a valid whole number.");
             return;
         }
 
@@ -233,7 +233,7 @@ public class Mathematics {
         b = Math.abs(b);
 
         if (a == 0 && b == 0) {
-            System.out.println("❌ HCF and LCM are undefined for (0, 0).");
+            System.out.println("HCF and LCM are undefined for (0, 0).");
             return;
         }
 
@@ -246,8 +246,8 @@ public class Mathematics {
         long hcf = x;
         long lcm = (a == 0 || b == 0) ? 0 : (a / hcf) * b;
 
-        System.out.printf("✔ HCF(%d, %d) = %d%n", a, b, hcf);
-        System.out.printf("✔ LCM(%d, %d) = %d%n", a, b, lcm);
+        System.out.printf("HCF(%d, %d) = %d%n", a, b, hcf);
+        System.out.printf("LCM(%d, %d) = %d%n", a, b, lcm);
     }
 
     /**
@@ -267,7 +267,7 @@ public class Mathematics {
         try {
             x = Double.parseDouble(valStr.trim());
         } catch (NumberFormatException e) {
-            System.out.println("❌ Invalid number '" + valStr + "'.");
+            System.out.println("Invalid number '" + valStr + "'.");
             return;
         }
 
@@ -282,13 +282,13 @@ public class Mathematics {
             !op.equals("arcsin") &&
             !op.equals("arccos") &&
             !op.equals("arctan")) {
-            System.out.println("❌ Invalid function '" + op +
+            System.out.println("Invalid function '" + op +
                 "'. Use sin, cos, tan, asin, acos, atan, arcsin, arccos, or arctan.");
             return;
         }
 
         if ((op.equals("asin") || op.equals("arcsin") || op.equals("acos") || op.equals("arccos")) && (x < -1 || x > 1)) {
-            System.out.println("❌ Domain error: " + op + " input must be in [-1, 1].");
+            System.out.println("Domain error: " + op + " input must be in [-1, 1].");
             return;
         }
 
@@ -306,7 +306,7 @@ public class Mathematics {
             default:
                 throw new IllegalStateException("Unexpected op: " + op);
         }
-        System.out.printf("✔ %s(%.6f) = %.6f%n", op, x, result);
+        System.out.printf("%s(%.6f) = %.6f%n", op, x, result);
     }
 
     /**
@@ -325,22 +325,22 @@ public class Mathematics {
             long[] f1 = parseFraction(f1Str);
             n1 = f1[0];  d1 = f1[1];
         } catch (IllegalArgumentException e) {
-            System.out.println("❌ Invalid first fraction: " + e.getMessage());
+            System.out.println("Invalid first fraction: " + e.getMessage());
             return;
         }
         try {
             long[] f2 = parseFraction(f2Str);
             n2 = f2[0];  d2 = f2[1];
         } catch (IllegalArgumentException e) {
-            System.out.println("❌ Invalid second fraction: " + e.getMessage());
+            System.out.println("Invalid second fraction: " + e.getMessage());
             return;
         }
         if (!op.equals("+") && !op.equals("-") && !op.equals("*") && !op.equals("/")) {
-            System.out.println("❌ Invalid operator '" + op + "'. Use one of +, -, *, /.");
+            System.out.println("Invalid operator '" + op + "'. Use one of +, -, *, /.");
             return;
         }
         if (op.equals("/") && n2 == 0) {
-            System.out.println("❌ Division by zero (second fraction is 0).");
+            System.out.println("Division by zero (second fraction is 0).");
             return;
         }
 
@@ -372,7 +372,7 @@ public class Mathematics {
         rd /= g;
 
         String result = (rd == 1) ? String.valueOf(rn) : rn + "/" + rd;
-        System.out.printf("✔ %s %s %s = %s%n", f1Str, op, f2Str, result);
+        System.out.printf("%s %s %s = %s%n", f1Str, op, f2Str, result);
     }
 
     /** Parses a fraction string "num/den" or "num". Returns [num, den]. */
@@ -414,25 +414,25 @@ public class Mathematics {
         try {
             fav = Double.parseDouble(favStr.trim());
         } catch (NumberFormatException e) {
-            System.out.println("❌ Invalid input for favorable count. Must be a number.");
+            System.out.println("Invalid input for favorable count. Must be a number.");
             return;
         }
         try {
             total = Double.parseDouble(totalStr.trim());
         } catch (NumberFormatException e) {
-            System.out.println("❌ Invalid input for total count. Must be a number.");
+            System.out.println("Invalid input for total count. Must be a number.");
             return;
         }
         if (total <= 0) {
-            System.out.println("❌ Total must be > 0.");
+            System.out.println("Total must be > 0.");
             return;
         }
         if (fav < 0 || fav > total) {
-            System.out.println("❌ Favorable must be in [0, total].");
+            System.out.println("Favorable must be in [0, total].");
             return;
         }
         double p = fav / total;
-        System.out.printf("✔ Probability P = %.6f (%s/%s)%n", p, favStr, totalStr);
+        System.out.printf("Probability P = %.6f (%s/%s)%n", p, favStr, totalStr);
     }
 
     /**
@@ -452,23 +452,23 @@ public class Mathematics {
             pBgivenA      = Double.parseDouble(pBAStr.trim());
             pBgivenNotA   = Double.parseDouble(pBAcStr.trim());
         } catch (NumberFormatException e) {
-            System.out.println("❌ All inputs must be valid numbers in [0,1].");
+            System.out.println("All inputs must be valid numbers in [0,1].");
             return;
         }
         if (!(pA >= 0 && pA <= 1 &&
               pBgivenA >= 0 && pBgivenA <= 1 &&
               pBgivenNotA >= 0 && pBgivenNotA <= 1)) {
-            System.out.println("❌ All probabilities must lie in [0,1].");
+            System.out.println("All probabilities must lie in [0,1].");
             return;
         }
         double pNotA = 1 - pA;
         double denom = pBgivenA * pA + pBgivenNotA * pNotA;
         if (denom == 0) {
-            System.out.println("❌ Denominator zero: P(B) = 0, cannot apply Bayes.");
+            System.out.println("Denominator zero: P(B) = 0, cannot apply Bayes.");
             return;
         }
         double posterior = (pBgivenA * pA) / denom;
-        System.out.printf("✔ P(A|B) = %.6f [= (%.6f·%.6f)/%.6f]%n",
+        System.out.printf("P(A|B) = %.6f [= (%.6f·%.6f)/%.6f]%n",
                           posterior, pBgivenA, pA, denom);
     }
 }
