@@ -1,9 +1,12 @@
 package com.smcc.app;
 
+import com.smcc.backend_process.BackendProcess;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.Objects;
 
 public class App {
@@ -121,6 +124,7 @@ public class App {
         return panel;
     }
 
+
     private JPanel createRegisterPanel() {
         JPanel panel = new JPanel();
         panel.setBackground(new Color(30, 30, 30));
@@ -163,13 +167,43 @@ public class App {
         registerBtn.setForeground(Color.WHITE);
         registerBtn.setFont(labelFont);
         registerBtn.setFocusPainted(false);
-        registerBtn.addActionListener(e -> {
-            String pass = new String(password.getPassword());
-            String confirm = new String(confirmPassword.getPassword());
-            if (!pass.equals(confirm)) {
-                status.setText("Passwords do not match.");
-            } else {
-                status.setText("Registration successful!");
+
+        registerBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userName=username.getText();
+                String email_String=email.getText();
+                String pass = new String(password.getPassword());
+                String confirm = new String(confirmPassword.getPassword());
+
+                JDialog dialog = new JDialog(FRAME, "Gobble Notice", false); // false = non-modal
+                dialog.setSize(300, 120);
+                dialog.setUndecorated(false); // You can set to true for a frameless look
+
+                JPanel msgPanel = new JPanel();
+                msgPanel.setBackground(new Color(30, 30, 30));
+                msgPanel.add(status);
+
+
+                dialog.add(msgPanel);
+                if (!pass.equals(confirm)) {
+                    status.setText("Passwords do not match.");
+                } else {
+                    String userDetails=userName+"€"+email_String+"€"+pass+"€"+confirm;
+                    try {
+                        BackendProcess.CaesarCipher.writeToFile(new BackendProcess.CaesarCipher(new int[]{1,2}).encrypt(userDetails.toCharArray()));
+                        status.setText("Registration successful. Go Back To Login To Enter!");
+                    } catch (IOException ex) {
+                        status.setText("Error! File Not Found!");
+                        throw new RuntimeException(ex);
+                    }
+
+                }
+
+                // Position the dialog just beneath the FRAME
+                dialog.setLocation(FRAME.getX()*2, FRAME.getY()*2);
+                dialog.setVisible(true);
+
             }
         });
 
@@ -189,10 +223,6 @@ public class App {
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
 
 
-        JPanel msgPanel = new JPanel();
-        msgPanel.setBackground(new Color(30, 30, 30));
-        msgPanel.add(status);
-        panel.add(msgPanel);
 
 
 
@@ -219,6 +249,7 @@ public class App {
             // BackendProcess logic
         }
     }
+
 
     public static void init() {
         new App();
