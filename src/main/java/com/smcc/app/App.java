@@ -109,8 +109,13 @@ public class App {
                 else{
                     AudioSystem.playPlop();
                 }
+                messageArea.setFont(new Font(Font.SANS_SERIF,Font.BOLD,14));
                 messageArea.append("Mr. Cluck: " + response + "\n");
-
+                try {
+                    CaesarCipher.writeToFileConversation(response);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
                 messageArea.setCaretPosition(messageArea.getDocument().getLength());
             }
         });

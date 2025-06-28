@@ -38,6 +38,18 @@ public class MrCluckIntelligence {
                 if (text.contains(site)) {
                     return launchWebsite(site);
                 }
+                else
+                {
+                    String url= text.substring(text.indexOf('-')+1);
+                    if (url != null) {
+                        try {
+                            Desktop.getDesktop().browse(URI.create(url));
+                            return "Opening " + "link" + "...";
+                        } catch (IOException e) {
+                            return "Failed to open " + "link" + ".";
+                        }
+                    }
+                }
             }
         } else if (text.contains("close")) {
             if (text.contains("app")) {
@@ -65,17 +77,17 @@ public class MrCluckIntelligence {
                     .replace("define", "")
                     .replace("definition of", "")
                     .trim();
-            String definition = PhysicsFAQ.getDefinition(topic);
+            String definition = PhysicsFAQ.getDefinitionAndFAQs(topic);
             if (definition != null) return definition;
         }
 
-// For FAQs
+        // For FAQs
         if (text.startsWith("faq about") || text.startsWith("faqs about")) {
             String topic = text
                     .replace("faq about", "")
                     .replace("faqs about", "")
                     .trim();
-            String faqs = PhysicsFAQ.getFAQs(topic);
+            String faqs = PhysicsFAQ.getDefinitionAndFAQs(topic);
             if (faqs != null) return faqs;
         }
 
@@ -210,7 +222,7 @@ public class MrCluckIntelligence {
     }
     public static String getPhysicsConcepts() {
         return """
-        ## 🏀 Projectile Motion
+        ##  Projectile Motion
         Definition: Motion in 2D under gravity with a parabolic path.
         Formulas:
         - Time of Flight: T = (2v₀·sinθ)/g
@@ -219,8 +231,8 @@ public class MrCluckIntelligence {
         FAQs:
         - What path does it follow? A parabola.
         - Does horizontal velocity change? No—it remains constant.
-
-        ## 🧲 Laws of Motion
+        
+        ## Laws of Motion
         Definition: Newton's 3 laws describe how forces affect motion.
         Formulas:
         - 1st Law: Law of inertia.
@@ -230,7 +242,7 @@ public class MrCluckIntelligence {
         - What is inertia? Resistance to motion change.
         - Are forces always equal in action-reaction pairs? Yes.
 
-        ## 🔌 Electricity
+        ##  Electricity
         Definition: Flow of electric charge in a circuit.
         Formulas:
         - Ohm’s Law: V = I·R
@@ -240,7 +252,7 @@ public class MrCluckIntelligence {
         - What flows in a wire? Electrons.
         - What’s the SI unit of current? Ampere (A)
 
-        ## 🧭 Magnetism
+        ##  Magnetism
         Definition: Force caused by moving charges or magnetic materials.
         Formulas:
         - Magnetic Force: F = q·v·B·sinθ
@@ -249,7 +261,7 @@ public class MrCluckIntelligence {
         - What causes magnetism? Moving charges.
         - Do electricity and magnetism relate? Yes—they're unified in electromagnetism.
 
-        ## 🌍 Gravitation
+        ##  Gravitation
         Definition: Attractive force between any two masses.
         Formulas:
         - Universal Law: F = G·(m₁m₂)/r²
@@ -259,7 +271,7 @@ public class MrCluckIntelligence {
         - Why do objects fall? Earth's gravity.
         - Does gravity vary? Slightly with altitude and location.
 
-        ## 🔄 Rotational Motion
+        ##  Rotational Motion
         Definition: Motion about a fixed axis.
         Formulas:
         - Angular velocity: ω = θ/t
@@ -270,7 +282,7 @@ public class MrCluckIntelligence {
         - Moment of inertia? Rotational equivalent of mass.
         - F=ma analog? τ = I·α
 
-        ## 🚗 Motion Concepts
+        ##  Motion Concepts
         Definitions:
         - Speed: scalar distance/time
         - Velocity: vector displacement/time
@@ -284,7 +296,7 @@ public class MrCluckIntelligence {
         - Can displacement be zero? Yes.
         - What is deceleration? Negative acceleration.
 
-        ## 🎯 Vectors
+        ##  Vectors
         Definition: Quantity with both magnitude and direction.
         Formulas:
         - |A| = √(Ax² + Ay² + Az²)
@@ -294,7 +306,7 @@ public class MrCluckIntelligence {
         - Can vectors cancel? Yes, if equal and opposite.
         - Are vectors visualized with arrows? Yes.
 
-        ## 🔁 SHM
+        ##  SHM
         Definition: Repetitive motion with restoring force ∝ displacement.
         Formulas:
         - x(t) = A·cos(ωt + φ)
@@ -304,7 +316,7 @@ public class MrCluckIntelligence {
         - Restoring force? F = -k·x
         - Is SHM sinusoidal? Always.
 
-        ## 🔥 Thermodynamics
+        ##  Thermodynamics
         Definition: Study of heat, energy, and systems.
         Formulas:
         - First Law: ΔU = Q - W
@@ -313,7 +325,7 @@ public class MrCluckIntelligence {
         - Entropy? Degree of disorder.
         - Heat vs. temperature? Energy vs. kinetic measurement.
 
-        ## 🧵 Elasticity
+        ##  Elasticity
         Definition: Ability to return to shape after deformation.
         Formulas:
         - Stress = F/A
@@ -323,7 +335,7 @@ public class MrCluckIntelligence {
         - Elastic limit? Max reversible stretch.
         - Hooke’s law valid for all? Only within elastic limit.
 
-        ## 💧 Fluid Mechanics
+        ## Fluid Mechanics
         Definition: Study of fluids at rest and in motion.
         Formulas:
         - Pressure = F/A

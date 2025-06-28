@@ -4,6 +4,7 @@ import com.smcc.app_interfaces.CipherService;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Objects;
 
     //CaesarCipher Technique
@@ -61,6 +62,14 @@ import java.util.Objects;
             String s= reader.readLine();
             reader.close();
             return s;
+        }
+
+        public static void writeToFileConversation(String conversationLine) throws IOException{
+            BufferedWriter writer=new BufferedWriter(new FileWriter("conversation.txt",true));
+            Date dateTime=new Date();
+            String format="["+dateTime.getTime()+"]"+":"+conversationLine+"\n";
+            writer.write(format);
+            writer.close();
         }
     }
 
