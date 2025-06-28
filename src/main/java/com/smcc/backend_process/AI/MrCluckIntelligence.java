@@ -18,6 +18,7 @@ public class MrCluckIntelligence {
         }
 
 
+
         // Farewells
         String[] farewells = {"bye", "goodbye", "see you", "later", "take care"};
         for (String bye : farewells) {
@@ -25,6 +26,8 @@ public class MrCluckIntelligence {
                 return "Goodbye! Talk to you soon.";
             }
         }
+
+
 
         //Commands, Open And Close
         String[] commands={"close","open"};
@@ -100,6 +103,9 @@ public class MrCluckIntelligence {
                return "" ;
            }
         }
+
+        //Calculative Sections
+
 
         // Basic questions
         if (text.contains("how are you")) {
