@@ -69,27 +69,30 @@ public class MrCluckIntelligence {
             return getPhysicsSampleInputs();
         }
 
-
+        String topic;
         // For definitions
         if (text.startsWith("what is ") || text.startsWith("define ") || text.contains("definition of")) {
-            String topic = text
+            topic = text
                     .replace("what is", "")
                     .replace("define", "")
                     .replace("definition of", "")
                     .trim();
             String definition = PhysicsFAQ.getDefinitionAndFAQs(topic);
+
             if (definition != null) return definition;
         }
 
+
         // For FAQs
         if (text.startsWith("faq about") || text.startsWith("faqs about")) {
-            String topic = text
+            topic = text
                     .replace("faq about", "")
                     .replace("faqs about", "")
                     .trim();
             String faqs = PhysicsFAQ.getDefinitionAndFAQs(topic);
             if (faqs != null) return faqs;
         }
+
 
         // Calculate Sections
         try {
@@ -105,7 +108,7 @@ public class MrCluckIntelligence {
             }
 
             // Dedicated Physics Section
-            if (text.contains("solve physics") || text.startsWith("physics:") || text.startsWith("phy-") || text.contains("find") && text.contains("physics")) {
+            if (text.contains("solve physics:") || text.startsWith("physics:") || text.startsWith("phy-") || text.contains("find") && text.contains("physics")) {
                 String expr = getString(text);
 
                 return (expr != null && !expr.isEmpty()) ? Physics.autoSolvePhysics(expr) : "Formatting error: After saying 'solve physics', please include your question.";
@@ -119,7 +122,7 @@ public class MrCluckIntelligence {
         if (text.contains("what is your name")) return "You can call me Mr. Cluck—your friendly AI companion.";
         if (text.contains("who made you")) return "I was made by two brilliant humans named Saptansu and Kajol, of course!";
 
-        return "I'm not sure how to respond to that yet, but I'm learning!";
+        return "I'm not sure how to respond to that yet, but I'm learning! You can ask my uncle, Copilot :)";
     }
 
     public static String getMathSampleInputs() {
