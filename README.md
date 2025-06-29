@@ -7,8 +7,8 @@ Saptansu Ghosh & Kajol Dey
 - Gradle
 
 To Run The Project, Do Any Of The Two:-
--In Your IDE,Open The Terminal While The Project is Open and run the command - ./gradlew run
--Or If you have IntelliJ Idea IDE then open the Gradle Tasks Tab 
+- In Your IDE,Open The Terminal While The Project is Open and run the command - ./gradlew run
+- Or If you have IntelliJ Idea IDE then open the Gradle Tasks Tab 
 (A Small Elephant Icon On Your Top Right)
 And Under Application Package, Run the task-'run' And It Will Run.
 
