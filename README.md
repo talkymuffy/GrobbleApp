@@ -6,6 +6,14 @@ Saptansu Ghosh & Kajol Dey
 - Kotlin
 - Gradle
 
+To Run The Project, Do Any Of The Two:-
+-In Your IDE,Open The Terminal While The Project is Open and run the command - ./gradlew run
+-Or If you have IntelliJ Idea IDE then open the Gradle Tasks Tab 
+(A Small Elephant Icon On Your Top Right)
+And Under Application Package, Run the task-'run' And It Will Run.
+
+(There Are No Errors But Because Of The Plugin It Might Show It Has Error)
+
 🎯 Project Goal
 This project is a lightweight, self-built demonstration of how AI concepts can enhance education, especially without relying on complex imported AI models like those in Python or C++. Instead, we’ve crafted simple, custom-built logic to simulate real-world applications of AI within a Java/Gradle/Kotlin-integrated environment.
 Our aim is to:
@@ -38,8 +46,6 @@ Or visit the registration page to create your own account.
 AI used: Microsoft Copilot
 - Only for generating definitions, explanations, and helping ideate educational content.
 - All backend logic and parsing engines are hand-built—no external AI libraries involved.
-
-
 
 📅 Submission Date
 29th June 2025
