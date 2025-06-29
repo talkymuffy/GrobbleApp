@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    application
 }
 
 group = "com.smcc"
@@ -16,4 +17,10 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+application {
+    mainClass = "com.smcc.Main"
+}
+application {
+    applicationDefaultJvmArgs = listOf("-Dgreeting.language=en")
 }
