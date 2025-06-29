@@ -1,44 +1,41 @@
 package com.smcc.backend_process;
 
+import com.smcc.app_interfaces.SolverFunction;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Mathematics {
+public class Mathematics implements SolverFunction {
 
-    public static String autoSolve(String equation) {
-        StringBuilder chatOutput = new StringBuilder();
-        String eq = equation.trim();
+    public static String autoSolve(String input)  {
+        if (input == null || input.trim().isEmpty()) return "Empty input.";
 
-        Matcher bayesMat = Pattern.compile("^\\s*bayes\\s*\\(([^,]+),([^,]+),([^\\)]+)\\)\\s*$", Pattern.CASE_INSENSITIVE).matcher(eq);
-        if (bayesMat.matches()) return solveBayes(bayesMat, chatOutput);
+        String eq = input.trim().replaceAll("\\s+", "");
+        StringBuilder out = new StringBuilder();
 
-        Matcher probMat = Pattern.compile("^\\s*P\\s*=\\s*([\\d\\.]+)\\s*/\\s*([\\d\\.]+)\\s*$").matcher(eq);
-        if (probMat.matches()) return solveProbability(probMat, chatOutput);
+        // === Probabilities ===
+        if (SolverFunction.matchAndSolve("(?i)^bayes\\(([^,]+),([^,]+),([^\\)]+)\\)$", eq, 0, out, Mathematics::solveBayes)) return out.toString();
+        if (SolverFunction.matchAndSolve("^P=([\\d.]+)/([\\d.]+)$", eq, 0, out, Mathematics::solveProbability)) return out.toString();
+        if (SolverFunction.matchAndSolve("(?i)^probability\\(([^,]+),([^\\)]+)\\)$", eq, 0, out, Mathematics::solveProbability)) return out.toString();
 
-        Matcher probFuncMat = Pattern.compile("^\\s*probability\\s*\\(([^,]+),([^\\)]+)\\)\\s*$", Pattern.CASE_INSENSITIVE).matcher(eq);
-        if (probFuncMat.matches()) return solveProbability(probFuncMat, chatOutput);
+        // === Trigonometric Functions ===
+        if (SolverFunction.matchAndSolve("(?i)^(sin|cos|tan)\\((-?\\d*\\.?\\d+)\\)$", eq, 0, out, Mathematics::solveTrigonometry)) return out.toString();
 
-        Matcher trigMat = Pattern.compile("^\\s*([a-zA-Z]+)\\s*\\(\\s*([-+]?\\d*\\.?\\d+)\\s*\\)\\s*$").matcher(eq);
-        if (trigMat.matches()) return solveTrigonometry(trigMat, chatOutput);
+        // === Fractions ===
+        if (SolverFunction.matchAndSolve("(-?\\d+/\\d+)([+\\-*/])(-?\\d+/\\d+)", eq, 0, out, Mathematics::solveFractionOperation)) return out.toString();
 
-        Matcher fracMat = Pattern.compile("^\\s*(-?\\d+\\s*/\\s*-?\\d+|\\d+)\\s*([+\\-*/])\\s*(-?\\d+\\s*/\\s*-?\\d+|\\d+)\\s*$").matcher(eq);
-        if (fracMat.matches()) return solveFractionOperation(fracMat, chatOutput);
+        // === Basic Arithmetic ===
+        if (SolverFunction.matchAndSolve("(-?\\d*\\.?\\d+)([+\\-*/])(-?\\d*\\.?\\d+)", eq, 0, out, Mathematics::solveArithmetic)) return out.toString();
 
-        Matcher arithMat = Pattern.compile("^\\s*(-?\\d*\\.?\\d+)\\s*([+\\-*/])\\s*(-?\\d*\\.?\\d+)\\s*$").matcher(eq);
-        if (arithMat.matches()) return solveArithmetic(arithMat, chatOutput);
+        // === HCF and LCM ===
+        if (SolverFunction.matchAndSolve("(?i)^(hcf|lcm)\\(([^,]+),([^\\)]+)\\)$", eq, 0, out, Mathematics::solveHcfLcm)) return out.toString();
 
-        Matcher hcfLcmMat = Pattern.compile("^\\s*(hcf|lcm)\\s*\\(([^,]+),([^\\)]+)\\)\\s*$", Pattern.CASE_INSENSITIVE).matcher(eq);
-        if (hcfLcmMat.matches()) return solveHcfLcm(hcfLcmMat, chatOutput);
+        // === Algebra: Linear, Inequalities, Quadratics ===
+        if (SolverFunction.matchAndSolve("([-+]?\\d*\\.?\\d*)x([+\\-]\\d*\\.?\\d*)=0", eq, 0, out, Mathematics::solveLinear)) return out.toString();
+        if (SolverFunction.matchAndSolve("([-+]?\\d*\\.?\\d*)\\*?x([+\\-]\\d*\\.?\\d+)?(<=|>=|<|>)0", eq, 0, out, Mathematics::solveInequality)) return out.toString();
+        if (SolverFunction.matchAndSolve("([-+]?\\d*\\.?\\d*)x\\^2([+\\-]\\d*\\.?\\d*)x([+\\-]\\d*\\.?\\d*)=0", eq, 0, out, Mathematics::solveQuadratic)) return out.toString();
 
-        Matcher ineqMat = Pattern.compile("^([-+]?\\d*\\.?\\d*)\\*?x([+\\-]\\d*\\.?\\d+)?(<=|>=|<|>)0$").matcher(eq.replaceAll("\\s+", ""));
-        if (ineqMat.matches()) return solveInequality(ineqMat, chatOutput);
-
-        Matcher quadMat = Pattern.compile("^([-+]?\\d*\\.?\\d*)x\\^2([+\\-]\\d*\\.?\\d*)x([+\\-]\\d*\\.?\\d*)=0$").matcher(eq.replaceAll("\\s+", ""));
-        if (quadMat.matches()) return solveQuadratic(quadMat, chatOutput);
-
-        Matcher linMat = Pattern.compile("^([-+]?\\d*\\.?\\d*)x([+\\-]\\d*\\.?\\d*)=0$").matcher(eq.replaceAll("\\s+", ""));
-        if (linMat.matches()) return solveLinear(linMat, chatOutput);
-
+        // === Catch-All ===
         return "Could not understand or solve the equation. Please check the format.";
     }
 
@@ -181,5 +178,10 @@ public class Mathematics {
         out.append(func).append("(").append(m.group(2)).append("°) = ")
                 .append(String.format("%.4f", result));
         return out.toString();
+    }
+
+    @Override
+    public String apply(Matcher matcher, StringBuilder out) {
+        return "";
     }
 }

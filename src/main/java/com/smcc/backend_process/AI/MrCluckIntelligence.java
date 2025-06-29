@@ -3,6 +3,7 @@ package com.smcc.backend_process.AI;
 import com.smcc.backend_process.Mathematics;
 import com.smcc.backend_process.Physics;
 import com.smcc.backend_process.PhysicsFAQ;
+import com.smcc.backend_process.QuestionInterpreter;
 
 import java.awt.*;
 import java.io.IOException;
@@ -95,27 +96,36 @@ public class MrCluckIntelligence {
 
 
         // Calculate Sections
-        try {
-            String trimColon = text.contains(":") ? text.substring(text.indexOf(':') + 1).trim() : null;
-            String trimDash = text.contains("-") ? text.substring(text.indexOf('-') + 1).trim() : null;
+        boolean isMath = (
+                text.startsWith("solve") ||
+                        text.startsWith("find") ||
+                        text.startsWith("equate") ||
+                        (text.contains("find") && text.contains("value")) ||
+                        text.matches("^([a-z]*[:\\-])?\\s*\\d+.*[+\\-*/^=x].*\\d+.*")  // equation-like shorthand
+        );
 
-            if (text.contains("solve") || text.contains("equate") ||
-                    (text.contains("find") && text.contains("value")) ||
-                    text.matches(".*\\d.*[+\\-x*/].*\\d.*")) {
+        boolean isPhysics = text.contains("physics") || text.contains("solve physics") ||
+                        text.startsWith("phy-") ||
+                        text.contains("projectile") || text.contains("range") || text.contains("maximum height") ||
+                        text.contains("newton") || text.contains("force") || text.contains("inertia") || text.contains("laws of motion") ||
+                        text.contains("voltage") || text.contains("current") || text.contains("resistance") ||
+                        text.contains("magnet") || text.contains("flux") || text.contains("magnetic field") ||
+                        text.contains("gravity") || text.contains("gravitational") || text.contains("weight") ||
+                        text.contains("torque") || text.contains("moment of inertia") || text.contains("angular") ||
+                        text.contains("velocity") || text.contains("speed") || text.contains("displacement") || text.contains("acceleration") ||
+                        text.contains("shm") || text.contains("spring constant") || text.contains("oscillation") ||
+                        text.contains("thermo") || text.contains("heat") || text.contains("temperature change") ||
+                        text.contains("elastic") || text.contains("strain") || text.contains("stress") ||
+                        text.contains("buoyancy") || text.contains("viscosity") || text.contains("fluid") ||
+                        text.contains("vector") || text.contains("dot product") || text.contains("angle between");
 
-                String expr = (trimDash != null) ? trimDash : trimColon;
-                return (expr != null) ? Mathematics.autoSolve(expr) : "Formatting error. Use ':' or '-' to separate your equation.";
-            }
-
-            // Dedicated Physics Section
-            if (text.contains("solve physics:") || text.startsWith("physics:") || text.startsWith("phy-") || text.contains("find") && text.contains("physics")) {
-                String expr = getString(text);
-
-                return (expr != null && !expr.isEmpty()) ? Physics.autoSolvePhysics(expr) : "Formatting error: After saying 'solve physics', please include your question.";
-            }
-        } catch (Exception e) {
-            return "Something went wrong while processing your request.";
+        if (!(isMath || isPhysics)) {
+            return "This input doesn't appear to be a math or physics question. If you're trying another prompt type (like 'explain:' or 'quiz:'), let me know!";
         }
+        else if(isMath||isPhysics){
+            return QuestionInterpreter.dectQuestion(text);
+        }
+
 
         // Friendly Q&A
         if (text.contains("how are you")) return "I'm doing great! Thanks for asking!";

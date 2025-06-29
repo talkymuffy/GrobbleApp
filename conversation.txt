@@ -144,3 +144,32 @@ FAQs:
 - What is buoyancy? Upthrust.
 - Viscosity? Resistance to flow.
 
+[1751182085102]:Could not understand or solve the equation. Please check the format.
+[1751182092009]:Could not understand or solve the equation. Please check the format.
+[1751182107785]:Could not understand or solve the equation. Please check the format.
+[1751182117098]:Could not understand or solve the equation. Please check the format.
+[1751182122183]:Could not understand or solve the equation. Please check the format.
+[1751182135507]:Formatting error. Use ':' or '-' to separate your equation.
+[1751182163173]:Could not understand or solve the equation. Please check the format.
+[1751182220722]:Could not understand or solve the equation. Please check the format.
+[1751182228543]:Something went wrong while processing your request.
+[1751182236290]:Something went wrong while processing your request.
+[1751182256352]:Formatting error. Use ':' or '-' to separate your equation.
+[1751182263448]:Could not understand or solve the equation. Please check the format.
+[1751182284169]:Could not understand or solve the equation. Please check the format.
+[1751185826905]:solve: 3x + 5 = 0
+[1751185827114]:x = -1.67x = -1.67
+[1751185876890]:find value of sin(30)
+[1751185877081]:Could not understand or solve the equation. Please check the format.
+[1751185995965]:solve: 3x + 5 = 0
+[1751185996161]:x = -1.67x = -1.67
+[1751186005934]:find value of sin(30)
+[1751186006116]:sin(30°) = 0.5000sin(30°) = 0.5000
+[1751186013831]:faq about velocity
+[1751186014018]:Velocity is the rate of change of displacement; it is a vector quantity that has both magnitude and direction.
+
+Q: What is velocity?
+A: Velocity is the rate of change of displacement; it is a vector quantity.
+
+Q: How is velocity different from speed?
+A: Speed is scalar (no direction), velocity is vector (includes direction).

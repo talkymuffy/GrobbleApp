@@ -102,6 +102,11 @@ public class App {
                 inputField.setText("");
 
 
+                try {
+                    CaesarCipher.writeToFileConversation(text);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
                 String response = MrCluckIntelligence.processUserMessage(text);
                 if(response.equals( "I'm not sure how to respond to that yet, but I'm learning!")){
                     AudioSystem.playTrade();
