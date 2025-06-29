@@ -1,62 +1,56 @@
 package com.smcc.backend_process;
 
+/**
+ * QuestionInterpreter routes user queries:
+ * 1) physics word‐problems via WordProblemParser → Physics.autoSolvePhysics
+ * 2) math word‐problems via WordProblemParser → Mathematics.autoSolve
+ * 3) pure‐expression math → Mathematics.autoSolve
+ * 4) Wikipedia lookups via Question + JWiki
+ * 5) fallback to casual conversation prompt
+ */
 public class QuestionInterpreter {
 
     public static String dectQuestion(String input) {
-        if (input == null || input.trim().isEmpty()) return "Empty input.";
-
-        String lower = input.trim().toLowerCase();
-        String expression = extractExpression(input);
-
-        // Expanded Physics Keyword Detection
-        boolean isPhysics =
-                lower.contains("physics") || lower.contains("solve physics") ||
-                        lower.startsWith("phy-") ||
-                        lower.contains("projectile") || lower.contains("range") || lower.contains("maximum height") ||
-                        lower.contains("newton") || lower.contains("force") || lower.contains("inertia") || lower.contains("laws of motion") ||
-                        lower.contains("voltage") || lower.contains("current") || lower.contains("resistance") ||
-                        lower.contains("magnet") || lower.contains("flux") || lower.contains("magnetic field") ||
-                        lower.contains("gravity") || lower.contains("gravitational") || lower.contains("weight") ||
-                        lower.contains("torque") || lower.contains("moment of inertia") || lower.contains("angular") ||
-                        lower.contains("velocity") || lower.contains("speed") || lower.contains("displacement") || lower.contains("acceleration") ||
-                        lower.contains("shm") || lower.contains("spring constant") || lower.contains("oscillation") ||
-                        lower.contains("thermo") || lower.contains("heat") || lower.contains("temperature change") ||
-                        lower.contains("elastic") || lower.contains("strain") || lower.contains("stress") ||
-                        lower.contains("buoyancy") || lower.contains("viscosity") || lower.contains("fluid") ||
-                        lower.contains("vector") || lower.contains("dot product") || lower.contains("angle between");
-
-        // Math Intent Detection (unchanged)
-        boolean isMath = lower.contains("solve") ||
-                lower.contains("equate") ||
-                (lower.contains("find") && lower.contains("value")) ||
-                lower.matches(".*\\d.*[+\\-*/^=x].*\\d.*");
-
-        if (isPhysics) {
-            return (expression != null && !expression.isEmpty())
-                    ? Physics.autoSolvePhysics(expression)
-                    : "Formatting error: Include a physics expression after ':' or '-'.";
+        if (input == null || input.isBlank()) {
+            return "Hmm, I didn't catch that. Can you rephrase it?";
         }
 
-        if (isMath) {
-            return (expression != null && !expression.isEmpty())
-                    ? Mathematics.autoSolve(expression)
-                    : "Formatting error: Include a math expression after ':' or '-'.";
+        // 0) Normalize and strip common math verbs once
+        String normalized = input
+                .replaceFirst("(?i)^(solve|calculate|evaluate|find value of)[-:\\s]*", "")
+                .trim();
+
+        // 1) Physics word-problems
+        String physCmd = WordProblemParser.parsePhysicsProblem(normalized);
+        if (physCmd != null) {
+            return Physics.autoSolvePhysics(physCmd);
         }
 
-        return "Sorry, I couldn’t tell if your question was about math or physics. Try using keywords like 'solve', 'physics:', or 'find value...'";
+        // 2) Math word-problems
+        String mathCmd = WordProblemParser.parseMathProblem(normalized);
+        if (mathCmd != null) {
+            return Mathematics.autoSolve(mathCmd);
+        }
+
+        // 3) Pure-expression math
+        if (looksLikeMath(normalized)) {
+            return Mathematics.autoSolve(normalized);
+        }
+
+        // 4) Wiki queries
+        Question q = new Question(normalized);
+        if (q.isWikiQuery()) {
+            return q.getSummary();
+        }
+
+        // 5) Fallback casual
+        return "I couldn’t quite tell if you're asking about physics, math, or something else. "
+                + "You can try: `solve x^2+5x+6=0` or `what is average speed if...`";
     }
 
-    private static String extractExpression(String input) {
-        if (input.contains(":")) return input.substring(input.indexOf(':') + 1).trim();
-        if (input.contains("-")) return input.substring(input.indexOf('-') + 1).trim();
-
-        // NEW: Handle "find value of ..." pattern
-        String lower = input.toLowerCase().trim();
-        if (lower.startsWith("find value of")) {
-            return input.substring(lower.indexOf("find value of") + "find value of".length()).trim();
-        }
-
-        return input.trim(); // fallback
+    private static boolean looksLikeMath(String s) {
+        // detect digits combined with math operators or x^n forms
+        String noSpace = s.replaceAll("\\s+", "");
+        return noSpace.matches(".*\\d+.*([+\\-*/^=x]).*");
     }
-
 }

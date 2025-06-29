@@ -5,42 +5,149 @@ import com.smcc.app_interfaces.SolverFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+/**
+ * Mathematics is your central dispatcher for all math‐related inputs.
+ * At the top, it recognizes custom commands from WordProblemParser
+ * (average:, percent:, interest:, ratio:) and handles them directly.
+ * If no custom command is found, it falls back to the regex‐based
+ * arithmetic, algebra, trigonometry, Bayes, etc., and finally equations.
+ */
+
+
 public class Mathematics implements SolverFunction {
 
-    public static String autoSolve(String input)  {
-        if (input == null || input.trim().isEmpty()) return "Empty input.";
+        // === PATTERN DEFINITIONS ===
 
-        String eq = input.trim().replaceAll("\\s+", "");
+        // 1) Probability & Bayes
+        private static final Pattern BAYES = Pattern.compile(
+                "(?i)^bayes\\(([^,]+),([^,]+),([^\\)]+)\\)$");
+        private static final Pattern PROB_FRACTION = Pattern.compile("^P=(\\d+)/(\\d+)$");
+        private static final Pattern PROB_FUNC     = Pattern.compile("(?i)^probability\\(([^,]+),([^\\)]+)\\)$");
+
+        // 2) Trig & Roots
+        private static final Pattern TRIG      = Pattern.compile("(?i)^(sin|cos|tan)\\((-?\\d*\\.?\\d+)\\)$");
+        private static final Pattern SQRT      = Pattern.compile("(?i)^(sqrt|√)\\((-?\\d*\\.?\\d+)\\)$");
+        private static final Pattern CBRT      = Pattern.compile("(?i)^(cbrt|∛)\\((-?\\d*\\.?\\d+)\\)$");
+
+        // 3) Arithmetic & Fractions
+        private static final Pattern FRACTION_OP = Pattern.compile("(-?\\d+/\\d+)([+\\-*/])(-?\\d+/\\d+)");
+        private static final Pattern ARITHMETIC  = Pattern.compile("^(-?\\d*\\.?\\d+)([+\\-*/])(-?\\d*\\.?\\d+)$");
+
+        // 4) HCF/LCM
+        private static final Pattern HCF_LCM = Pattern.compile("(?i)^(hcf|lcm)\\((\\d+),(\\d+)\\)$");
+
+        // 5) Equation watermark
+        private static final Pattern HAS_EQUALS = Pattern.compile(".*=.*");
+
+
+        public static String autoSolve(String input) {
+            if (input == null || input.trim().isEmpty()) {
+                return "Empty input.";
+            }
+
+            // Normalize and remove whitespace
+            String eq = input.trim().replaceAll("\\s+", "");
+            StringBuilder out = new StringBuilder();
+
+            // 1) Direct pattern-matched shortcuts
+            if (SolverFunction.matchAndSolve(BAYES.pattern(),    eq, 0, out, Mathematics::solveBayes))
+                return out.toString();
+            if (SolverFunction.matchAndSolve(PROB_FRACTION.pattern(), eq, 0, out, Mathematics::solveProbability))
+                return out.toString();
+            if (SolverFunction.matchAndSolve(PROB_FUNC.pattern(),     eq, 0, out, Mathematics::solveProbability))
+                return out.toString();
+
+            if (SolverFunction.matchAndSolve(TRIG.pattern(),   eq, 0, out, Mathematics::solveTrigonometry))
+                return out.toString();
+            if (SolverFunction.matchAndSolve(SQRT.pattern(),   eq, 0, out, Mathematics::solveRoot))
+                return out.toString();
+            if (SolverFunction.matchAndSolve(CBRT.pattern(),   eq, 0, out, Mathematics::solveRoot))
+            return out.toString();
+
+            if (SolverFunction.matchAndSolve(FRACTION_OP.pattern(), eq, 0, out, Mathematics::solveFractionOperation))
+                return out.toString();
+            if (SolverFunction.matchAndSolve(ARITHMETIC.pattern(),  eq, 0, out, Mathematics::solveArithmetic))
+                return out.toString();
+
+            if (SolverFunction.matchAndSolve(HCF_LCM.pattern(), eq, 0, out, Mathematics::solveHcfLcm))
+                return out.toString();
+
+            // 2) Simplify root literals inside a larger expression (optional)
+            eq = simplifyRoots(eq);
+
+            // 3) Equation mode (if there’s an '=' sign)
+            if (HAS_EQUALS.matcher(eq).matches()) {
+                return solveEquation(eq);
+            }
+
+            // 4) Single numeric value
+            if (eq.matches("^-?\\d+(\\.\\d+)?$")) {
+                return "Result: " + eq;
+            }
+
+            // 5) Fallback
+            return "Could not understand or solve: \"" + input + "\". Please check format.";
+        }
+
+    /**
+     * Attempts to solve an equation of one of three forms:
+     *   1) Linear:     a·x + b = c
+     *   2) Quadratic:  a·x² + b·x + c = 0
+     *   3) Inequality: a·x + b  op  c   (op ∈ {<,≤,>,≥})
+     *
+     * @param eq  the equation string, with no spaces (e.g. "5x+3=18", "x^2-3x+2=0", "2x-4<=8")
+     * @return a human‐readable solution or an unrecognized‐format message
+     */
+    private static String solveEquation(String eq) {
+       //Linear
+        Pattern linear = Pattern.compile(
+                "^([+-]?(?:\\d*\\.?\\d+)?)[xX]([+-]?\\d*\\.?\\d*)=([+-]?\\d*\\.?\\d+)$"
+        );
+        Matcher m = linear.matcher(eq);
+        if (m.matches()) {
+
+            String aStr = m.group(1);
+            double a = (aStr.isEmpty() || aStr.equals("+") || aStr.equals("-"))
+                    ? (aStr.equals("-") ? -1 : 1)
+                    : Double.parseDouble(aStr);
+
+
+            double b = m.group(2).isEmpty() ? 0 : Double.parseDouble(m.group(2));
+            double c = Double.parseDouble(m.group(3));
+
+            double x = (c - b) / a;
+            return String.format("x = %.4f", x);
+        }
+
+        // 2) Quadratic:
+        Pattern quad = Pattern.compile(
+                "^([+-]?\\d*\\.?\\d+)[xX]\\^2([+-]?\\d*\\.?\\d+)[xX]([+-]?\\d*\\.?\\d+)=0$"
+        );
         StringBuilder out = new StringBuilder();
+        if (SolverFunction.matchAndSolve(quad.pattern(), eq, 0, out, Mathematics::solveQuadratic)) {
+            return out.toString();
+        }
 
-        // === Probabilities ===
-        if (SolverFunction.matchAndSolve("(?i)^bayes\\(([^,]+),([^,]+),([^\\)]+)\\)$", eq, 0, out, Mathematics::solveBayes)) return out.toString();
-        if (SolverFunction.matchAndSolve("^P=([\\d.]+)/([\\d.]+)$", eq, 0, out, Mathematics::solveProbability)) return out.toString();
-        if (SolverFunction.matchAndSolve("(?i)^probability\\(([^,]+),([^\\)]+)\\)$", eq, 0, out, Mathematics::solveProbability)) return out.toString();
+        // 3) Inequality:
+        Pattern ineq = Pattern.compile(
+                "^([+-]?(?:\\d*\\.?\\d+)?)[xX]([+-]?\\d*\\.?\\d*)(<=|>=|<|>)([+-]?(?:\\d*\\.?\\d+))$"
+        );
+        m = ineq.matcher(eq);
+        if (m.matches()) {
+            return solveInequality(
+                    m.group(1),  // a
+                    m.group(2),  // b
+                    m.group(3),  // operator
+                    m.group(4)   // c
+            );
+        }
 
-        // === Trigonometric Functions ===
-        if (SolverFunction.matchAndSolve("(?i)^(sin|cos|tan)\\((-?\\d*\\.?\\d+)\\)$", eq, 0, out, Mathematics::solveTrigonometry)) return out.toString();
-
-        // === Fractions ===
-        if (SolverFunction.matchAndSolve("(-?\\d+/\\d+)([+\\-*/])(-?\\d+/\\d+)", eq, 0, out, Mathematics::solveFractionOperation)) return out.toString();
-
-        // === Basic Arithmetic ===
-        if (SolverFunction.matchAndSolve("(-?\\d*\\.?\\d+)([+\\-*/])(-?\\d*\\.?\\d+)", eq, 0, out, Mathematics::solveArithmetic)) return out.toString();
-
-        // === HCF and LCM ===
-        if (SolverFunction.matchAndSolve("(?i)^(hcf|lcm)\\(([^,]+),([^\\)]+)\\)$", eq, 0, out, Mathematics::solveHcfLcm)) return out.toString();
-
-        // === Algebra: Linear, Inequalities, Quadratics ===
-        if (SolverFunction.matchAndSolve("([-+]?\\d*\\.?\\d*)x([+\\-]\\d*\\.?\\d*)=0", eq, 0, out, Mathematics::solveLinear)) return out.toString();
-        if (SolverFunction.matchAndSolve("([-+]?\\d*\\.?\\d*)\\*?x([+\\-]\\d*\\.?\\d+)?(<=|>=|<|>)0", eq, 0, out, Mathematics::solveInequality)) return out.toString();
-        if (SolverFunction.matchAndSolve("([-+]?\\d*\\.?\\d*)x\\^2([+\\-]\\d*\\.?\\d*)x([+\\-]\\d*\\.?\\d*)=0", eq, 0, out, Mathematics::solveQuadratic)) return out.toString();
-
-        // === Catch-All ===
-        return "Could not understand or solve the equation. Please check the format.";
+        // 4) Fallback
+        return "Equation detected but unrecognized format: \"" + eq + "\".";
     }
 
-
-    private static String solveProbability(Matcher m, StringBuilder out) {
+        private static String solveProbability(Matcher m, StringBuilder out) {
         double favourable = Double.parseDouble(m.group(1).trim());
         double total = Double.parseDouble(m.group(2).trim());
 
@@ -55,6 +162,29 @@ public class Mathematics implements SolverFunction {
         return out.toString();
     }
 
+    private static String solveRoot(Matcher m, StringBuilder out) {
+        String func = m.group(1).toLowerCase();
+        double value = Double.parseDouble(m.group(2));
+        double result;
+
+        switch (func) {       //UnI-  U+221A and U+221B(Sq and Cb rt)
+            case "sqrt", "√", "square_root_of" -> {
+                if (value < 0) return "Square root of negative number is imaginary.";
+                result = Math.sqrt(value);
+                out.append("√").append(value).append(" = ").append(String.format("%.4f", result));
+            }
+            case "cbrt", "∛", "cube_root_of" -> {
+                result = Math.cbrt(value);
+                out.append("∛").append(value).append(" = ").append(String.format("%.4f", result));
+            }
+            default -> {
+                return "Unsupported root function.";
+            }
+        }
+        return out.toString();
+    }
+
+
     private static String solveBayes(Matcher m, StringBuilder out) {
         double pA = Double.parseDouble(m.group(1).trim());
         double pBgivenA = Double.parseDouble(m.group(2).trim());
@@ -65,6 +195,41 @@ public class Mathematics implements SolverFunction {
         double result = (pBgivenA * pA) / pB;
         out.append("P(A|B) = ").append(String.format("%.4f", result));
         return out.toString();
+    }
+    private static String simplifyRoots(String input) {
+        // sqrt(x) ➜ decimal
+        Pattern sqrtPattern = Pattern.compile("sqrt\\(([^)]+)\\)");
+        Matcher sqrtMatcher = sqrtPattern.matcher(input);
+        StringBuffer sqrtBuffer = new StringBuffer();
+
+        while (sqrtMatcher.find()) {
+            try {
+                double val = Double.parseDouble(sqrtMatcher.group(1));
+                String result = String.valueOf(Math.sqrt(val));
+                sqrtMatcher.appendReplacement(sqrtBuffer, Matcher.quoteReplacement(result));
+            } catch (Exception e) {
+                sqrtMatcher.appendReplacement(sqrtBuffer, Matcher.quoteReplacement("sqrt(" + sqrtMatcher.group(1) + ")"));
+            }
+        }
+        sqrtMatcher.appendTail(sqrtBuffer);
+        input = sqrtBuffer.toString();
+
+        // x^(1/2) ➜ decimal
+        Pattern powerHalf = Pattern.compile("([\\d.]+)\\^\\(1/2\\)");
+        Matcher powerMatcher = powerHalf.matcher(input);
+        StringBuffer powerBuffer = new StringBuffer();
+
+        while (powerMatcher.find()) {
+            try {
+                double val = Double.parseDouble(powerMatcher.group(1));
+                String result = String.valueOf(Math.sqrt(val));
+                powerMatcher.appendReplacement(powerBuffer, Matcher.quoteReplacement(result));
+            } catch (Exception e) {
+                powerMatcher.appendReplacement(powerBuffer, Matcher.quoteReplacement(powerMatcher.group()));
+            }
+        }
+        powerMatcher.appendTail(powerBuffer);
+        return powerBuffer.toString();
     }
 
     private static String solveQuadratic(Matcher m, StringBuilder out) {
@@ -85,12 +250,43 @@ public class Mathematics implements SolverFunction {
         return out.toString();
     }
 
-    private static String solveLinear(Matcher m, StringBuilder out) {
-        double A = Double.parseDouble(m.group(1).isEmpty() ? "1" : m.group(1));
-        double B = Double.parseDouble(m.group(2));
-        out.append(A == 0 ? (B == 0 ? "Infinite solutions." : "No solution.") : "x = " + String.format("%.2f", -B / A));
-        return out.toString();
+    private static String solveInequality(String aStr, String bStr, String op, String cStr) {
+        // parse A (handle implicit ±1)
+        double a;
+        if (aStr == null || aStr.isEmpty() || aStr.equals("+")) {
+            a = 1;
+        } else if (aStr.equals("-")) {
+            a = -1;
+        } else {
+            a = Double.parseDouble(aStr);
+        }
+
+        // parse B (empty → 0)
+        double b = (bStr == null || bStr.isEmpty())
+                ? 0
+                : Double.parseDouble(bStr);
+
+        // parse C
+        double c = Double.parseDouble(cStr);
+
+        // compute rhs = (c – b)/a
+        double rhs = (c - b) / a;
+
+        // if A is negative, flip the inequality direction
+        String finalOp = op;
+        if (a < 0) {
+            finalOp = switch (op) {
+                case "<"  -> ">";
+                case "<=" -> ">=";
+                case ">"  -> "<";
+                case ">=" -> "<=";
+                default   -> op;
+            };
+        }
+
+        return String.format("Solution: x %s %.4f", finalOp, rhs);
     }
+
 
     private static String solveInequality(Matcher m, StringBuilder out) {
         double A = Double.parseDouble(m.group(1).isEmpty() ? "1" : m.group(1));
