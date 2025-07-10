@@ -30,6 +30,7 @@ public class App {
     //MAIN
     JPanel MAIN;
 
+
     private App() {
         FRAME = new JFrame("Grobble App");
         FRAME.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -40,8 +41,8 @@ public class App {
 
         ImageIcon logoIcon = new ImageIcon("logo.png"); // Transparent PNG
         Image scaledImage = logoIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-        ImageIcon newlogoIcon=new ImageIcon(scaledImage);
-        icon=newlogoIcon;
+        ImageIcon newlogoIcon = new ImageIcon(scaledImage);
+        icon = newlogoIcon;
 
         FRAME.setIconImage(newlogoIcon.getImage());
 
@@ -51,7 +52,7 @@ public class App {
 
         LOGIN_PANEL = createLoginPanel();
         REGISTER_PANEL = createRegisterPanel();
-        MAIN=createChatTypePanel("Mr. Cluck's Chat!");
+        MAIN = createChatTypePanel("Mr. Cluck's Chat!");
 
         MAIN_CONTAINER.add(LOGIN_PANEL, "Login");
         MAIN_CONTAINER.add(REGISTER_PANEL, "Register");
@@ -229,6 +230,7 @@ public class App {
 
 
         return panel;
+
     }
 
 
