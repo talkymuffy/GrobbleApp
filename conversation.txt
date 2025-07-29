@@ -292,3 +292,7 @@ The word comes from the Latin bombus, which in turn comes from the Greek βόμ�
 [1752141490455]:No real roots.No real roots.
 [1752141499198]:solve 6x^2+5x-6=0
 [1752141499388]:Two real roots: 0.67, -1.50Two real roots: 0.67, -1.50
+[1753778135169]:Hello
+[1753778135359]:Hey! What's on your mind?
+[1753778212134]:Solve: 1+1
+[1753778212334]:Result: 2.0000Result: 2.0000
